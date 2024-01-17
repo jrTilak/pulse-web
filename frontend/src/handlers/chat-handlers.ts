@@ -6,7 +6,7 @@ export default class ChatHandler {
   public static handleGetLastChats = async (): Promise<
     ServiceResponseType<LastChatType[]>
   > => {
-    return fetchUrl<LastChatType[]>("/chats/last", "GET");
+    return fetchUrl<LastChatType[]>("/chats/last-chats", "GET");
   };
 
   public static handleGetChatData = async (
