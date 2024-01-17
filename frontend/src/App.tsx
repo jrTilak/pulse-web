@@ -10,6 +10,9 @@ import CreateNewStory from "./components/pages/new/new-story/create-new-story";
 import CreateNewPost from "./components/pages/new/new-post/create-new-post";
 import SearchPage from "./components/pages/search/search-page";
 import NotificationPage from "./components/pages/notifications/notification-page";
+import OpenAChat from "./components/pages/chats/open-a-chat";
+import ChatsOneToOne from "./components/pages/chats/chat-one-to-one";
+import ChatPageLayout from "./components/layouts/chat-page-layout";
 interface RouteType {
   path: string;
   Layout?: ({ children }: { children: React.ReactNode }) => JSX.Element;
