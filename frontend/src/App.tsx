@@ -5,6 +5,9 @@ import UserLogin from "./components/auth/user-login";
 import UserSignup from "./components/auth/user-signup";
 import FeedPage from "./components/pages/feed/feed-page";
 import ProfilePage from "./components/pages/user-profile/profile-page";
+import CreateNew from "./components/pages/new/create-new";
+import CreateNewStory from "./components/pages/new/new-story/create-new-story";
+import CreateNewPost from "./components/pages/new/new-post/create-new-post";
 interface RouteType {
   path: string;
   Layout?: ({ children }: { children: React.ReactNode }) => JSX.Element;
@@ -34,6 +37,22 @@ const routes: RouteType[] = [
   {
     path: "/u/:username",
     Component: ProfilePage,
+  },
+  {
+    path: "/new",
+    Component: CreateNew,
+  },
+  {
+    path: "/new/story",
+    Component: CreateNewStory,
+  },
+  {
+    path: "/new/story/:type",
+    Component: CreateNewStory,
+  },
+  {
+    path: "/new/post",
+    Component: CreateNewPost,
   },
   {
     path: "*",
