@@ -22,7 +22,7 @@ const app = express();
 const httpServer = new Server(app);
 const io = new IoServer(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_DOMAIN,
     credentials: true,
   },
   pingTimeout: 60000,
