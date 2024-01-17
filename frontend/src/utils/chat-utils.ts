@@ -40,7 +40,7 @@ export default class ChatUtils {
    * @param currentUserId - The ID of the current user.
    * @returns An object containing the current user ID and the other user ID, or null if the chat ID is invalid.
    */
-  public static etUserIdsFromChatId = (
+  public static getUserIdsFromChatId = (
     chatId: string,
     currentUserId: string
   ) => {

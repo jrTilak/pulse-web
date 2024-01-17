@@ -69,6 +69,16 @@ const routes: RouteType[] = [
     Component: NotificationPage,
   },
   {
+    path: "/chats",
+    Component: OpenAChat,
+    Layout: ChatPageLayout,
+  },
+  {
+    path: "/chats/:chatId",
+    Component: ChatsOneToOne,
+    Layout: ChatPageLayout,
+  },
+  {
     path: "*",
     Component: () => <h1>404</h1>,
   },
