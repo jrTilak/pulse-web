@@ -22,7 +22,7 @@ const app = express();
 const httpServer = new Server(app);
 const io = new IoServer(httpServer, {
   cors: {
-    origin: process.env.FRONTEND_DOMAIN,
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   },
   pingTimeout: 60000,
@@ -34,7 +34,7 @@ const io = new IoServer(httpServer, {
 //middlewares
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
-app.use(cors({ origin: process.env.FRONTEND_DOMAIN, credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
