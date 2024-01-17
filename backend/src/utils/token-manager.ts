@@ -31,11 +31,11 @@ export const verifyToken = async (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.signedCookies["auth_token"];
+  const token = req.signedCookies[process.env.AUTH_TOKEN_ID];
   if (!token || token.trim() === "") {
     const response: ErrorResponseType = {
       status: 401,
-      message: "Cookies not found, Please login again!",
+      message: "Auth Error, Cookies not found",
       errors: [],
     };
     return res.status(response.status).json(response);
