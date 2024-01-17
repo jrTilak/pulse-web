@@ -4,6 +4,7 @@ import RootLayout from "./components/layouts/root-layout";
 import UserLogin from "./components/auth/user-login";
 import UserSignup from "./components/auth/user-signup";
 import FeedPage from "./components/pages/feed/feed-page";
+import ProfilePage from "./components/pages/user-profile/profile-page";
 interface RouteType {
   path: string;
   Layout?: ({ children }: { children: React.ReactNode }) => JSX.Element;
@@ -29,6 +30,10 @@ const routes: RouteType[] = [
   {
     path: "/feed",
     Component: FeedPage,
+  },
+  {
+    path: "/u/:username",
+    Component: ProfilePage,
   },
   {
     path: "*",
