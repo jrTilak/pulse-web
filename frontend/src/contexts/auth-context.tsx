@@ -1,13 +1,13 @@
 import LoadingPage from "@/components/pages/shared/loading-page";
 import { AuthContext } from "@/hooks/use-auth";
 import { toast } from "@/hooks/use-toast";
-import { getSavedPosts } from "@/handlers/post-handlers";
 import { UserType } from "@/types/user.types";
 import { ReactNode, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 import { UserAuthHandler } from "@/handlers/auth-handlers";
 import UserHandler from "@/handlers/user-handlers";
+import PostHandler from "@/handlers/post-handlers";
 
 export interface AuthContextType {
   currentUser: UserType;
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (response.success) {
           setCurrentUserFollowingList(response.data);
         }
-        const savedPosts = await getSavedPosts(res.data.username);
+        const savedPosts = await PostHandler.getSavedPosts(res.data.username);
         if (savedPosts.success) {
           setSavedPostsId(savedPosts.data);
         }
