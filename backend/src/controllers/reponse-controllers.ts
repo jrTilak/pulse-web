@@ -30,6 +30,30 @@ export default class ResponseController {
     return res.status(response.status).json(response);
   }
 
+  public static Handle404Error(res: Response, errors: []) {
+    const response: ErrorResponseType = {
+      status: 404,
+      message: "Not found!",
+      errors: errors,
+    };
+    return res.status(response.status).json(response);
+  }
+
+  /**
+   * Handles unauthorized error by sending a JSON response with status 401 and error details.
+   * @param res - The response object.
+   * @param errors - An array of error messages.
+   * @returns The response object with status 401 and error details.
+   */
+  public static HandleUnauthorizedError(res: Response, errors: []) {
+    const response: ErrorResponseType = {
+      status: 401,
+      message: "Unauthorized",
+      errors: errors,
+    };
+    return res.status(response.status).json(response);
+  }
+
   /**
    * Handles unprocessable entity error by sending an error response with status code 422 and the specified errors.
    * @param res The response object.
