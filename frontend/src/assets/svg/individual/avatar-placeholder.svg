@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="avatar">
+    <path fill="#979aa7" d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0z"
+        class="colorf47920 svgShape"></path>
+    <g fill="#87ddfd" class="colorffffff svgShape">
+        <circle cx="12" cy="9" r="6" opacity=".8" fill="#5325b3" class="color000000 svgShape"></circle>
+        <path
+            d="M20.539 18.255C18.535 17.226 15.427 16 12 16s-6.535 1.226-8.539 2.255a4.59 4.59 0 0 0-1.127.826C4.52 22.057 8.034 24 12 24s7.48-1.943 9.666-4.919a4.559 4.559 0 0 0-1.127-.826z"
+            opacity=".8" fill="#53309d" class="color000000 svgShape"></path>
+    </g>
+</svg>
