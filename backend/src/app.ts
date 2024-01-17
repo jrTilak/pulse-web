@@ -9,7 +9,7 @@ import { Server as IoServer } from "socket.io";
 import { Server } from "http";
 // import swaggerUi from "swagger-ui-express";
 // import YAML from "yamljs";
-// import { handleSocketConnection } from "./ws/ws.js";
+import { handleSocketConnection } from "./ws/ws.js";
 
 //api-sepcs
 // const swaggerDocument = YAML.load("./api-specs/swagger.yaml");
@@ -43,7 +43,7 @@ app.use(morgan("dev"));
 
 app.use("/api/v1", appRouter);
 
-// const namespace = io.of("/ws/v1");
-// handleSocketConnection(namespace);
+const namespace = io.of("/ws/v1");
+handleSocketConnection(namespace);
 
 export { app, httpServer, io };
