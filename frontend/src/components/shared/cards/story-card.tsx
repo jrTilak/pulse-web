@@ -370,7 +370,7 @@ const ViewersList = ({
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1, transition: { duration: 0.2 } }}
         exit={{ y: 100, opacity: 0 }}
-        className="w-full border-t border-muted-foreground h-[80%] bg-muted rounded-t-md absolute bottom-0 z-50 flex flex-col p-2 pt-4"
+        className="w-full border-t border-muted-foreground h-[80%] bg-gray-200 rounded-t-md absolute bottom-0 z-50 flex flex-col p-2 pt-4 shadow-md shadow-slate-500"
       >
         <p className="text-sm font-semibold text-muted-foreground mb-3">
           Views ({viewers.length}) Likes ({likes.length}){" "}
