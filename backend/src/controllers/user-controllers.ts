@@ -221,55 +221,6 @@ export default class UserController {
     }
   };
 
-  /**
-   * Creates a new story.
-   *
-   * @param req - The request object.
-   * @param res - The response object.
-   * @returns A Promise that resolves to the response object.
-   */
-  public static createNewStory = async (
-    //todo - move this to story controller
-    req: Request,
-    res: Response
-  ) => {
-    try {
-      const body = req.body;
-      const user = await User.findOne({ _id: res.locals.jwtData.id });
-      const storyTypes = ["text", "image", "video"];
-
-      if (!storyTypes.includes(req.params.type)) {
-        return ResponseController.HandleResponseError(res, {
-          status: 400,
-          message:
-            "Invalid story type, Story type can be + " + storyTypes.join(", "),
-          errors: [],
-        });
-      }
-
-      const newStory = new UserStory({
-        createdBy: res.locals.jwtData.id,
-        type: req.params.type,
-        content: body.content,
-      });
-      await newStory.save();
-      user.stories.push(newStory._id.toString());
-      await user.save();
-
-      //todo delete story after 24 hours
-      // agenda.schedule("24 hours", "delete-story", {
-      //   storyId: newStory._id,
-      //   createdBy: newStory.createdBy,
-      // });
-      return ResponseController.HandleSuccessResponse(res, {
-        status: 200,
-        message: "Story created",
-        data: newStory,
-      });
-    } catch (error) {
-      return ResponseController.Handle500Error(res, error);
-    }
-  };
 
   /**
    * Retrieves a user by their ID.

@@ -9,7 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { MdOutlineCloudUpload } from "react-icons/md";
 import Loading from "react-loading";
 import { useAuthContext } from "@/hooks/use-auth";
-import UserHandler from "@/handlers/user-handlers";
+import StoryHandler from "@/handlers/story-handlers";
 const ImageStory = () => {
   const { setCurrentUser } = useAuthContext();
   const [storyImage, setStoryImage] = useState("");
@@ -59,7 +59,7 @@ const ImageStory = () => {
       return;
     }
     setIsSubmitting(true);
-    const res = await UserHandler.createNewStory("image", storyImage);
+    const res = await StoryHandler.createNewStory("image", storyImage);
     setIsSubmitting(false);
     if (!res.success) {
       toast({
@@ -88,7 +88,7 @@ const ImageStory = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.2 }}
         className={cn(
-          "w-full max-w-xs bg-muted rounded-md flex items-center justify-center flex-col cursor-pointer aspect-[3/5]",
+          "min-w-full w-56 bg-muted rounded-md flex items-center justify-center flex-col cursor-pointer aspect-[3/5]",
           shadow.sm
         )}
       >

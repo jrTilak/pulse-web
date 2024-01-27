@@ -12,7 +12,7 @@ import { TiMediaPause } from "react-icons/ti";
 import { TbVolume, TbVolume3 } from "react-icons/tb";
 import Loading from "react-loading";
 import { useAuthContext } from "@/hooks/use-auth";
-import UserHandler from "@/handlers/user-handlers";
+import StoryHandler from "@/handlers/story-handlers";
 const VideoStory = () => {
   const { setCurrentUser } = useAuthContext();
   const [storyVideo, setStoryVideo] = useState("");
@@ -65,7 +65,7 @@ const VideoStory = () => {
       return;
     }
     setIsSubmitting(true);
-    const res = await UserHandler.createNewStory("video", storyVideo);
+    const res = await StoryHandler.createNewStory("video", storyVideo);
     setIsSubmitting(false);
     if (!res.success) {
       toast({
@@ -106,7 +106,7 @@ const VideoStory = () => {
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.2 }}
         className={cn(
-          "w-full max-w-xs bg-muted rounded-md flex items-center justify-center flex-col aspect-[3/5]",
+          "min-w-full w-56 bg-muted rounded-md flex items-center justify-center flex-col aspect-[3/5]",
           shadow.sm
         )}
       >

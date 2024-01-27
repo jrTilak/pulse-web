@@ -6,4 +6,14 @@ export interface UserStoryType {
   likes: string[];
   views: string[];
   createdAt: string;
+  storyConfig?: StoryConfigType;
+}
+
+export interface StoryConfigType {
+  isBold: boolean;
+  isItalic: boolean;
+  isUnderlined: boolean;
+  fontSize: number;
+  textColor: string;
+  backgroundColor: string;
 }

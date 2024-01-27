@@ -10,6 +10,7 @@ const UserStorySchema = new mongoose.Schema({
   },
   type: {
     type: String,
+    enum: ["text", "image", "video"],
     required: true,
   },
   content: {
@@ -27,6 +28,17 @@ const UserStorySchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  storyConfig: {
+    type: {
+      isBold: Boolean,
+      isItalic: Boolean,
+      isUnderline: Boolean,
+      isUnderlined: Boolean,
+      fontSize: Number,
+      textColor: String,
+      backgroundColor: String,
+    },
   },
 });
 

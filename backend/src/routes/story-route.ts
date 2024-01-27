@@ -11,6 +11,11 @@ storyRouter.get("/id/:storyId", StoryController.getStoryById);
 storyRouter.get("/following", StoryController.getFollowingStories);
 
 /**
+ * @POST - routes
+ */
+storyRouter.post("/new/story/:type", verifyToken, StoryController.createNewStory);
+
+/**
  * @PUT - routes
  */
 storyRouter.put("/id/:storyId/view", verifyToken, StoryController.viewAStory);

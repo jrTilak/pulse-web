@@ -40,15 +40,6 @@ export default class UserHandler {
     return fetchUrl<string[]>("/user/following", "GET");
   };
 
-  public static createNewStory = (
-    storyType: "text" | "image" | "video",
-    story: string
-  ): Promise<ServiceResponseType<UserStoryType>> => {
-    return fetchUrl<UserStoryType>(`/user/new/story/${storyType}`, "POST", {
-      content: story,
-    });
-  };
-
   public static getUserById = (
     userId: string,
     fields?: string[]

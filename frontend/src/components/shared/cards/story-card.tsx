@@ -106,85 +106,109 @@ const StoryCard = ({
           position: "absolute",
         }}
         className={cn(
-          "bg-muted relative max-w-72 rounded-md flex items-center justify-center flex-col aspect-[3/5] overflow-hidden",
-          shadow.sm,
-          content.type === "text" ? "p-4" : ""
+          "bg-muted relative rounded-md flex flex-col aspect-[3/5]",
+          shadow.sm
         )}
       >
-        {isDrawerOpen && (
-          <ViewersList
-            viewers={content.views}
-            likes={content.likes}
-            setIsDialogOpen={setIsDialogOpen}
-          />
-        )}
-        <StoryCardThreeDotsMenu content={content} />
-        {content.type === "text" && (
-          <p className="text-lg font-semibold text-wrap overflow-hidden text-center break-words">
-            {content.content}
-          </p>
-        )}
+        <div
+          className={cn(
+            "min-w-full w-80 h-full flex items-center justify-center rounded-md",
+            content.type === "text" ? "p-4" : ""
+          )}
+          style={{
+            backgroundColor:
+              content.type === "text"
+                ? content.storyConfig?.backgroundColor
+                : "transparent",
+          }}
+        >
+          {isDrawerOpen && (
+            <ViewersList
+              viewers={content.views}
+              likes={content.likes}
+              setIsDialogOpen={setIsDialogOpen}
+            />
+          )}
+          <StoryCardThreeDotsMenu content={content} />
+          {content.type === "text" && (
+            <p
+              className="text-lg font-semibold text-wrap overflow-hidden text-center break-words"
+              style={{
+                color: content.storyConfig?.textColor,
+                fontWeight: content.storyConfig?.isBold ? "bold" : "normal",
+                fontStyle: content.storyConfig?.isItalic ? "italic" : "normal",
+                textDecoration: content.storyConfig?.isUnderlined
+                  ? "underline"
+                  : "none",
+              }}
+            >
+              {content.content}
+            </p>
+          )}
 
-        {content.type === "image" && (
-          <img
-            src={content.content}
-            alt="story"
-            className="object-cover object-center w-full h-full rounded-md"
-          />
-        )}
-        {content.type === "video" && <VideoPlayerCard src={content.content} />}
-        <div className="flex absolute bottom-4 left-4 gap-2 items-center">
-          <img
-            onClick={() => {
-              navigate(`/u/${user.username}`);
-              setIsDialogOpen(false);
-            }}
-            className=" w-8 h-8 object-cover object-center rounded-full cursor-pointer"
-            src={user.profileImg || AVATAR_PLACEHOLDER}
-            alt={user.name}
-          />
-          <p className="text-xs font-light text-wrap overflow-hidden break-words text-muted-foreground">
-            {DateUtils.getTimeElapsed(content.createdAt)}
-          </p>
+          {content.type === "image" && (
+            <img
+              src={content.content}
+              alt="story"
+              className="object-cover object-center w-full h-full rounded-md"
+            />
+          )}
+          {content.type === "video" && (
+            <VideoPlayerCard src={content.content} />
+          )}
+          <div className="flex absolute bottom-4 left-4 gap-2 items-center">
+            <img
+              onClick={() => {
+                navigate(`/u/${user.username}`);
+                setIsDialogOpen(false);
+              }}
+              className=" w-8 h-8 object-cover object-center rounded-full cursor-pointer"
+              src={user.profileImg || AVATAR_PLACEHOLDER}
+              alt={user.name}
+            />
+            <p className="text-xs font-light text-wrap overflow-hidden break-words text-muted-foreground">
+              {DateUtils.getTimeElapsed(content.createdAt)}
+            </p>
+          </div>
+
+          {currentUser._id === user._id ? (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDrawerOpen(true);
+              }}
+              className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
+            >
+              <MdRemoveRedEye className="text-3xl text-muted-foreground group-hover:text-primary transition-colors" />
+            </button>
+          ) : (
+            <>
+              {isLiking ? (
+                <Loading
+                  type="spin"
+                  color="#000"
+                  height={20}
+                  width={20}
+                  className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
+                />
+              ) : content.likes.includes(currentUser._id) ? (
+                <button
+                  onClick={() => toggleStoryLike(false)}
+                  className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
+                >
+                  <IoMdHeart className="text-3xl  text-muted-foreground text-red-500 transition-colors" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => toggleStoryLike(true)}
+                  className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
+                >
+                  <IoMdHeartEmpty className="text-3xl text-primary group-hover:text-red-500 transition-colors" />
+                </button>
+              )}
+            </>
+          )}
         </div>
-
-        {currentUser._id === user._id ? (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsDrawerOpen(true);
-            }}
-            className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
-          >
-            <MdRemoveRedEye className="text-3xl text-muted-foreground group-hover:text-primary transition-colors" />
-          </button>
-        ) : (
-          <>
-            {isLiking ? (
-              <Loading
-                type="spin"
-                color="#000"
-                height={20}
-                width={20}
-                className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
-              />
-            ) : content.likes.includes(currentUser._id) ? (
-              <button
-                onClick={() => toggleStoryLike(false)}
-                className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
-              >
-                <IoMdHeart className="text-3xl  text-muted-foreground text-red-500 transition-colors" />
-              </button>
-            ) : (
-              <button
-                onClick={() => toggleStoryLike(true)}
-                className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
-              >
-                <IoMdHeartEmpty className="text-3xl text-primary group-hover:text-red-500 transition-colors" />
-              </button>
-            )}
-          </>
-        )}
       </motion.div>
     </AnimatePresence>
   );

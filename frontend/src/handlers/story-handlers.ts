@@ -15,6 +15,17 @@ export default class StoryHandler {
     return fetchUrl<UserStoryType>(`/story/id/${storyId}`, "DELETE");
   };
 
+  public static createNewStory = (
+    storyType: "text" | "image" | "video",
+    story: string,
+    storyConfig?: UserStoryType["storyConfig"]
+  ): Promise<ServiceResponseType<UserStoryType>> => {
+    return fetchUrl<UserStoryType>(`/story/new/story/${storyType}`, "POST", {
+      content: story,
+      storyConfig,
+    });
+  };
+
   public static viewUserStoryById = async (
     storyId: string
   ): Promise<ServiceResponseType<UserStoryType>> => {

@@ -23,7 +23,6 @@ userRouter.get(
  * @POST -routes
  */
 userRouter.post("/u/:username/follow", verifyToken, UserController.followUser);
-userRouter.post("/new/story/:type", verifyToken, UserController.createNewStory);
 
 /**
  * @PUT -routes
