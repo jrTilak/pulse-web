@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { compare, hash } from "bcrypt";
 import User from "../schema/User";
 import UserAuth from "../schema/UserAuth";
 import UserPrivateInfo from "../schema/UserPrivateInfo";
 import ResponseController from "./reponse-controllers";
-import { CookieHandler } from "../utils/cookies";
+import { CookieHandler } from "../utils/cookie-handlers";
 import { PASSWORD_SALT_ROUNDS } from "../utils/const";
 
 /**
