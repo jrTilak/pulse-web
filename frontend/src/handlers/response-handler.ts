@@ -7,10 +7,10 @@ export default class ResponseHandler {
       data: res.data.data,
     };
   }
-  public static HandleErrorResponse(res: AxiosResponse<any>) {
+  public static HandleErrorResponse(err: any) {
     return {
       success: false as const,
-      message: res?.data?.message || "Something went wrong",
+      message: err?.response?.data?.message || "Something went wrong",
     };
   }
 }

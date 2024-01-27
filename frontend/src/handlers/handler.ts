@@ -28,7 +28,8 @@ export async function fetchUrl<T>(
       withCredentials: true,
     });
     return ResponseHandler.HandleSuccessResponse(response);
-  } catch (error: any) {
+  } catch (error) {
+    console.log(error);
     return ResponseHandler.HandleErrorResponse(error);
   }
 }
