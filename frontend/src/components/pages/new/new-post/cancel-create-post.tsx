@@ -22,7 +22,7 @@ const CancelCreatePost = ({
   const navigate = useNavigate();
   const handlePostCancel = () => {
     setContents({} as PostContentType["content"]);
-    navigate("/");
+    navigate("/feed");
   };
   return (
     <AlertDialog>
