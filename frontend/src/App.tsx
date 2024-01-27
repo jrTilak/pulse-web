@@ -14,9 +14,11 @@ const App = () => {
           </Suspense>
         );
         const Element = Layout ? (
-          <Layout>
-            <ComponentWithSuspense />
-          </Layout>
+          <Suspense fallback={<LoadingPage />}>
+            <Layout>
+              <ComponentWithSuspense />
+            </Layout>
+          </Suspense>
         ) : (
           <ComponentWithSuspense />
         );
