@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   setTimeout(() => {
     setIsLoaded(true);
-  }, 1500);
+  }, 300);
 
   const handleLogoutUser = async () => {
     const res = await UserAuthHandler.logoutUser();

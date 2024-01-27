@@ -12,13 +12,13 @@ const CreateNewStory = () => {
   const availableStoryTypes = ["text", "image", "video"];
   const navigate = useNavigate();
   const { type } = useParams();
-  const [storyType, setStoryType] = useState("image");
+  const [storyType, setStoryType] = useState("video");
 
   useEffect(() => {
     if (type && availableStoryTypes.includes(type)) {
       setStoryType(type);
     } else {
-      setStoryType("image");
+      setStoryType("video");
     }
   }, [type]);
 
