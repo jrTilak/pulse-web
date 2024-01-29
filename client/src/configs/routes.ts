@@ -1,39 +1,37 @@
 import React from "react";
 
-// const LandingPage = React.lazy(
-//   () => import("@/components/pages/landing/landing-page")
-// );
+const LandingPage = React.lazy(
+  () => import("@/app/pages/landing/landing-page")
+);
 const UserLogin = React.lazy(() => import("@/app/pages/auth/user-login"));
 const UserSignup = React.lazy(() => import("@/app/pages/auth/user-signup"));
-// const FeedPage = React.lazy(() => import("@/components/pages/feed/feed-page"));
-// const ProfilePage = React.lazy(
-//   () => import("@/components/pages/user-profile/profile-page")
-// );
-// const CreateNew = React.lazy(() => import("@/components/pages/new/create-new"));
+// const FeedPage = React.lazy(() => import("@/app/pages/feed/feed-page"));
+const ProfilePage = React.lazy(
+  () => import("@/app/pages/user-profile/profile-page")
+);
+// const CreateNew = React.lazy(() => import("@/app/pages/new/create-new"));
 // const CreateNewStory = React.lazy(
-//   () => import("@/components/pages/new/new-story/create-new-story")
+//   () => import("@/app/pages/new/new-story/create-new-story")
 // );
 // const CreateNewPost = React.lazy(
-//   () => import("@/components/pages/new/new-post/create-new-post")
+//   () => import("@/app/pages/new/new-post/create-new-post")
 // );
 // const SearchPage = React.lazy(
-//   () => import("@/components/pages/search/search-page")
+//   () => import("@/app/pages/search/search-page")
 // );
 // const NotificationPage = React.lazy(
-//   () => import("@/components/pages/notifications/notification-page")
+//   () => import("@/app/pages/notifications/notification-page")
 // );
 // const OpenAChat = React.lazy(
-//   () => import("@/components/pages/chats/open-a-chat")
+//   () => import("@/app/pages/chats/open-a-chat")
 // );
 // const ChatsOneToOne = React.lazy(
-//   () => import("@/components/pages/chats/chat-one-to-one")
+//   () => import("@/app/pages/chats/chat-one-to-one")
 // );
 // const ChatPageLayout = React.lazy(
 //   () => import("@/components/layouts/chat-page-layout")
 // );
-// const Error404Page = React.lazy(
-//   () => import("@/components/pages/error/404-page")
-// );
+const Error404Page = React.lazy(() => import("@/app/pages/error/404"));
 
 interface RouteType {
   path: string;
@@ -45,11 +43,11 @@ interface RouteType {
 }
 
 const ROUTES: RouteType[] = [
-  // {
-  //   path: "/",
-  //   Component: LandingPage,
-  //   noLayout: true,
-  // },
+  {
+    path: "/",
+    Component: LandingPage,
+    noLayout: true,
+  },
   {
     path: "/login",
     Component: UserLogin,
@@ -64,10 +62,10 @@ const ROUTES: RouteType[] = [
   //   path: "/feed",
   //   Component: FeedPage,
   // },
-  // {
-  //   path: "/u/:username",
-  //   Component: ProfilePage,
-  // },
+  {
+    path: "/u/:username",
+    Component: ProfilePage,
+  },
   // {
   //   path: "/new",
   //   Component: CreateNew,
@@ -102,10 +100,10 @@ const ROUTES: RouteType[] = [
   //   Component: ChatsOneToOne,
   //   Layout: ChatPageLayout,
   // },
-  // {
-  //   path: "*",
-  //   Component: Error404Page,
-  // },
+  {
+    path: "*",
+    Component: Error404Page,
+  },
 ];
 
 export default ROUTES;
