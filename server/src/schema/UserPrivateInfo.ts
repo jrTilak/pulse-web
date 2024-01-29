@@ -7,24 +7,24 @@ import mongoose from "mongoose";
 const UserPrivateInfo = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
       unique: true,
     },
     following: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
     followers: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
     savedPosts: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
     connectedUsers: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
       default: [],
     },
   },

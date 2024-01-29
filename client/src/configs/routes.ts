@@ -3,8 +3,8 @@ import React from "react";
 // const LandingPage = React.lazy(
 //   () => import("@/components/pages/landing/landing-page")
 // );
-const UserLogin = React.lazy(() => import("@/pages/auth/user-login"));
-const UserSignup = React.lazy(() => import("@/pages/auth/user-signup"));
+const UserLogin = React.lazy(() => import("@/app/pages/auth/user-login"));
+const UserSignup = React.lazy(() => import("@/app/pages/auth/user-signup"));
 // const FeedPage = React.lazy(() => import("@/components/pages/feed/feed-page"));
 // const ProfilePage = React.lazy(
 //   () => import("@/components/pages/user-profile/profile-page")

@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 const UserAuthSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
       unique: true,
     },

@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import RootLayout from "@/layouts/root-layout";
+import RootLayout from "@/app/layouts/root-layout";
 import ROUTES from "@/configs/routes";
 import { Suspense } from "react";
-import LoadingPage from "@/pages/shared/loading-page";
-import AuthWrapper from "@/layouts/auth-wrapper";
+import LoadingPage from "@/app/pages/shared/loading-page";
+import AuthWrapper from "@/app/layouts/auth-wrapper";
 
 const App = () => {
   return (

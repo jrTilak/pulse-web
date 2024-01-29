@@ -1,19 +1,19 @@
-import MotionImg from "@/components/animations/motion-img";
+import MotionImg from "@/app/components/animations/motion-img";
 import { motion } from "framer-motion";
 import { shadow } from "@/assets/constants/styles";
-import LoginSvg from "@/components/svgs/LoginSvg";
+import LoginSvg from "@/app/components/svgs/LoginSvg";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "@/assets/images/logo.png";
 import GoogleLogin from "./methods/GoogleLogin";
 import GuestLogin from "./methods/GuestLogin";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 import { HiOutlineEye, HiOutlineEyeSlash } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { AuthValidator, EmailUserType } from "@/validators/auth-validators";
 import Loading from "react-loading";
-import useAuthStore from "@/providers/auth-providers";
+import useAuthStore from "@/app/providers/auth-providers";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserAuthHandler } from "@/handlers/auth-handlers";
@@ -156,7 +156,7 @@ const UserSignup = () => {
                 <p className="mt-2 text-sm text-center text-gray-600">
                   Already have an account?{" "}
                   <Link
-                    to={`/login?redirect=${redirect}`}
+                    to={`/login${redirect ? `?redirect=${redirect}` : ""}`}
                     className="border-b border-gray-500 border-dotted text-primary"
                   >
                     login

@@ -5,7 +5,7 @@ import mongoose from "mongoose";
  */
 const UserStorySchema = new mongoose.Schema({
   createdBy: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   type: {
@@ -18,11 +18,11 @@ const UserStorySchema = new mongoose.Schema({
     required: true,
   },
   likes: {
-    type: [String],
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
   views: {
-    type: [String],
+    type: [mongoose.Schema.Types.ObjectId],
     default: [],
   },
   createdAt: {

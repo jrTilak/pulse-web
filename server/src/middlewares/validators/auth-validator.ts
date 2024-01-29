@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import ResponseController from "../../controllers/reponse-controllers";
+import AuthUtils from "../../utils/auth-utils";
 
 /**
  * A class that provides validation schemas and methods for authentication related operations.
@@ -43,11 +44,12 @@ export class AuthValidator {
     next: NextFunction
   ) {
     try {
+      const method = req.url === "/guest" ? "guest" : "email";
+      req.body.username = AuthUtils.createUsername(req.body.name, method);
       const newUserSchema =
         req.url === "/guest"
           ? AuthValidator.guestUserSchema
           : AuthValidator.emailUserSchema;
-      console.log(req.url);
       newUserSchema.parse(req.body);
       return next();
     } catch (error) {

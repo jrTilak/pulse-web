@@ -1,6 +1,6 @@
-import LoadingPage from "../pages/shared/loading-page";
+import LoadingPage from "@/app/pages/shared/loading-page";
 import { UserAuthHandler } from "@/handlers/auth-handlers";
-import useAuthStore from "@/providers/auth-providers";
+import useAuthStore from "@/app/providers/auth-providers";
 import { IUser } from "@/types/user-types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,13 +9,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
+} from "@/app/components/ui/alert-dialog";
+import { Input } from "@/app/components/ui/input";
 import { useState } from "react";
 import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
 import { UserAuthHandler } from "@/handlers/auth-handlers";
-import useAuthStore from "@/providers/auth-providers";
+import useAuthStore from "@/app/providers/auth-providers";
 import toast from "react-hot-toast";
 
 const GuestLogin = () => {

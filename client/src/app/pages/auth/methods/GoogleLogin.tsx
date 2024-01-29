@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/app/components/ui/button";
 
 const GoogleLogin = () => {
   const handleGoogleLogin = async () => {

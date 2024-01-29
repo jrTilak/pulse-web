@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 // import SidebarComp from "@/components/sidebar/sidebar-comp";
 // import SidebarHeader from "@/components/sidebar/sidebar-header";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { height } from "@/assets/constants/styles";
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
