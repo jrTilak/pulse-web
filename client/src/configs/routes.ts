@@ -6,9 +6,9 @@ const LandingPage = React.lazy(
 const UserLogin = React.lazy(() => import("@/app/pages/auth/user-login"));
 const UserSignup = React.lazy(() => import("@/app/pages/auth/user-signup"));
 // const FeedPage = React.lazy(() => import("@/app/pages/feed/feed-page"));
-// const ProfilePage = React.lazy(
-//   () => import("@/app/pages/user-profile/profile-page")
-// );
+const ProfilePage = React.lazy(
+  () => import("@/app/pages/user-profile/profile-page")
+);
 // const CreateNew = React.lazy(() => import("@/app/pages/new/create-new"));
 // const CreateNewStory = React.lazy(
 //   () => import("@/app/pages/new/new-story/create-new-story")
@@ -62,10 +62,10 @@ const ROUTES: RouteType[] = [
   //   path: "/feed",
   //   Component: FeedPage,
   // },
-  // {
-  //   path: "/u/:username",
-  //   Component: ProfilePage,
-  // },
+  {
+    path: "/u/:username",
+    Component: ProfilePage,
+  },
   // {
   //   path: "/new",
   //   Component: CreateNew,

@@ -14,7 +14,7 @@ const UserAvatar = ({
   width,
   containerClassName,
 }: {
-  user: IUser;
+  user: IUser | undefined;
   className?: string;
   height?: number;
   width?: number;
@@ -30,7 +30,7 @@ const UserAvatar = ({
     }
     setIsDialogOpen(true);
   };
-
+  if (!user) return null;
   return (
     <>
       <div

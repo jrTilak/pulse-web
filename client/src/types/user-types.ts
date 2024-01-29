@@ -15,6 +15,7 @@ export interface IUser {
   pinnedPosts: string[];
   posts: string[];
   socialLinks: ISocialLink[];
+  bio?: string;
 }
 
 export interface ISocialLink {
