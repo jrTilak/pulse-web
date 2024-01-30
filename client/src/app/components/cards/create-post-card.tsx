@@ -4,8 +4,9 @@ import { Button } from "@/app/components/ui/button";
 import { motion } from "framer-motion";
 import { shadow } from "@/assets/constants/styles";
 import { AVATAR_PLACEHOLDER } from "@/assets/constants/placeholders";
-import useAuthStore from "@/app/providers/auth-providers";
 import UserImageOnly from "@/app/components/avatars/user-image-only";
+import { useQuery } from "@tanstack/react-query";
+import { IUser } from "@/types/user-types";
 
 const createPostCardButtons = [
   {
@@ -28,7 +29,9 @@ const createPostCardButtons = [
 ];
 
 const CreatePostCard = () => {
-  const { currentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
   const navigate = useNavigate();
   return (
     <motion.div

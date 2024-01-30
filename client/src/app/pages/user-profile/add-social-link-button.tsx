@@ -20,7 +20,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/app/components/ui/popover";
-import useAuthStore from "@/app/providers/auth-providers";
 import useUserProfileStore from "@/app/providers/user-profile-provider";
 import UserHandler from "@/handlers/user-handlers";
 import { cn } from "@/lib/utils";
@@ -29,6 +28,7 @@ import UserValidator, {
 } from "@/validators/user-validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog } from "@radix-ui/react-dialog";
+import { useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -36,8 +36,8 @@ import toast from "react-hot-toast";
 import { FiPlus } from "react-icons/fi";
 
 const AddSocialLinkButton = () => {
+  const queryClient = useQueryClient();
   //popover
-  const { setCurrentUser } = useAuthStore((state) => state);
   const { setUser } = useUserProfileStore();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
@@ -67,7 +67,7 @@ const AddSocialLinkButton = () => {
     UserHandler.editUserDetails({ socialLinks: [{ ...data, label: value }] })
       .then((res) => {
         toast.success("Social link added successfully.");
-        setCurrentUser(res);
+        queryClient.setQueryData(["currentUser"], res);
         setUser(res);
         setIsDialogOpen(false);
         setValue("");

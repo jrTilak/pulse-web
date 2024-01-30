@@ -6,10 +6,13 @@ import { cn } from "../../../lib/utils";
 import { motion } from "framer-motion";
 import { AVATAR_PLACEHOLDER } from "@/assets/constants/placeholders";
 import SidebarProfile from "./sidebar-profile";
-import useAuthStore from "@/app/providers/auth-providers";
+import { useQuery } from "@tanstack/react-query";
+import { IUser } from "@/types/user-types";
 
 const SidebarComp = () => {
-  const { currentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
   const isSidebarCollapsed = false;
   const pathname = useLocation().pathname;
   const sidebar = {

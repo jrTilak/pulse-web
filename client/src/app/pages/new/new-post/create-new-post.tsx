@@ -20,13 +20,17 @@ import toast from "react-hot-toast";
 import PostValidator from "@/validators/post-validators";
 import PostHandler from "@/handlers/post-handlers";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "@/app/providers/auth-providers";
+import { useQuery } from "@tanstack/react-query";
+import { IUser } from "@/types/user-types";
+
 const CreateNewPost = () => {
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
   const [contents, setContents] = useState<IPostContent>();
   const [isPostUploading, setIsPostUploading] = useState(false);
   const [isDraftUploading, setIsDraftUploading] = useState(false);
   const textInputRef = useRef<HTMLTextAreaElement>(null);
-  const { currentUser } = useAuthStore((state) => state);
   const navigate = useNavigate();
   const createPost = async (isDraft: boolean = false) => {
     if (!contents?.text) {

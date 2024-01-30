@@ -13,15 +13,15 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { AuthValidator, EmailUserType } from "@/validators/auth-validators";
 import Loading from "react-loading";
-import useAuthStore from "@/app/providers/auth-providers";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserAuthHandler } from "@/handlers/auth-handlers";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UserSignup = () => {
   const redirect = useSearchParams()[0].get("redirect");
-  const { setCurrentUser } = useAuthStore((state) => state);
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [passwordType, setPasswordType] = useState(
     "password" as "password" | "text"
@@ -41,7 +41,7 @@ const UserSignup = () => {
   const onSubmit: SubmitHandler<EmailUserType> = async (data) => {
     UserAuthHandler.createEmailUser(data)
       .then((res) => {
-        setCurrentUser(res);
+        queryClient.setQueryData(["currentUser"], res);
         navigate(redirect || "/feed");
       })
       .catch((err) => {

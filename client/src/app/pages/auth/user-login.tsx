@@ -12,7 +12,6 @@ import { Button } from "@/app/components/ui/button";
 import { HiOutlineEye, HiOutlineEyeSlash } from "react-icons/hi2";
 import { useState } from "react";
 import Loading from "react-loading";
-import useAuthStore from "@/app/providers/auth-providers";
 import toast from "react-hot-toast";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
@@ -27,7 +26,6 @@ const UserLogin = () => {
     "password" as "password" | "text"
   );
   const redirect = useSearchParams()[0].get("redirect");
-  const { setCurrentUser } = useAuthStore((state) => state);
   const navigate = useNavigate();
 
   const {

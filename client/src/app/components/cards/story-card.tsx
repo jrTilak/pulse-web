@@ -25,8 +25,8 @@ import Loading from "react-loading";
 import StoryHandler from "@/handlers/story-handlers";
 import DateUtils from "@/utils/date-utils";
 import toast from "react-hot-toast";
-import useAuthStore from "@/providers/auth-providers";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { IUser } from "@/types/user-types";
 
 const StoryCard = ({
   _id,
@@ -41,7 +41,9 @@ const StoryCard = ({
   currentStoryIndex: number;
   prevStoryIndex: number;
 }) => {
-  const { currentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
   const [content, setContent] = useState<UserStoryType>();
   const navigate = useNavigate();
   const [isLiking, setIsLiking] = useState(false);
@@ -289,13 +291,15 @@ const VideoPlayerCard = ({ src }: { src: string }) => {
 };
 
 const StoryCardThreeDotsMenu = ({ content }: { content: UserStoryType }) => {
-  const { currentUser, updateCurrentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
+  const queryClient = useQueryClient();
   const handleDeleteStory = async () => {
     StoryHandler.deleteUserStoryById(content?._id)
       .then(() => {
-        updateCurrentUser({
-          stories: currentUser?.stories.filter((id) => id !== content?._id),
-        });
+        queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+        toast.success("Story deleted successfully");
       })
       .catch(() => {
         toast.error("Failed to delete story");

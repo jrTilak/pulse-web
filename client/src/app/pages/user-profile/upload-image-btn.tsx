@@ -1,10 +1,10 @@
 import { Button } from "@/app/components/ui/button";
 import { HiOutlineCamera } from "react-icons/hi";
 import { cn } from "../../../lib/utils";
-import useAuthStore from "@/app/providers/auth-providers";
 import toast from "react-hot-toast";
 import UserHandler from "@/handlers/user-handlers";
 import useUserProfileStore from "@/app/providers/user-profile-provider";
+import { useQueryClient } from "@tanstack/react-query";
 
 const UploadImageButton = ({
   type,
@@ -17,7 +17,7 @@ const UploadImageButton = ({
   >;
   isPhotoUploading: false | "cover" | "profile";
 }) => {
-  const { setCurrentUser } = useAuthStore((state) => state);
+  const queryClient = useQueryClient();
   const { setUser } = useUserProfileStore();
   const handleImageUpload = async () => {
     if (isPhotoUploading) return;
@@ -51,7 +51,7 @@ const UploadImageButton = ({
               : { profileImg: base64Data };
           UserHandler.editUserDetails(data)
             .then((res) => {
-              setCurrentUser(res);
+              queryClient.setQueryData(["currentUser"], res);
               setUser(res);
             })
             .catch((err) => {

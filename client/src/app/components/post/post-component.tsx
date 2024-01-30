@@ -14,8 +14,8 @@ import UserAvatar from "../avatars/user-avatar";
 import DateUtils from "@/utils/date-utils";
 import { IPost } from "@/types/post-types";
 import { Skeleton } from "../ui/skeleton";
-import useAuthStore from "@/app/providers/auth-providers";
 import { useQuery } from "@tanstack/react-query";
+import { IUser } from "@/types/user-types";
 
 interface PostComponentProps {
   post: IPost;
@@ -28,7 +28,9 @@ const PostComponent = ({
   isPinned = false,
   isLoading = false,
 }: PostComponentProps) => {
-  const { currentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
   const { data: savedPosts = [] } = useQuery<string[]>({
     queryKey: ["savedPosts"],
   });

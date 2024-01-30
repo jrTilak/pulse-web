@@ -2,10 +2,12 @@ import { FaHeart } from "react-icons/fa6";
 import { FaUserFriends } from "react-icons/fa";
 import { RiUserFollowFill } from "react-icons/ri";
 import UserAvatar from "@/app/components/avatars/user-avatar";
-import useAuthStore from "@/app/providers/auth-providers";
 import { IUser } from "@/types/user-types";
+import { useQuery } from "@tanstack/react-query";
 const SidebarProfile = () => {
-  const { currentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
   return (
     <>
       <UserAvatar

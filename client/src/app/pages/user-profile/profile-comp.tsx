@@ -10,7 +10,6 @@ import UploadImageButton from "./upload-image-btn";
 import ProfileInfo from "./profile-info";
 import UserAvatar from "@/app/components/avatars/user-avatar";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "@/app/providers/auth-providers";
 import ChatUtils from "@/utils/chat-utils";
 import useUserProfileStore from "@/app/providers/user-profile-provider";
 import { Skeleton } from "@/app/components/ui/skeleton";
@@ -18,13 +17,16 @@ import UserBio from "./user-bio";
 import SocialLinkBadge from "@/app/components/badges/social-link-badge";
 import AddSocialLinkButton from "./add-social-link-button";
 import CreatePostCard from "@/app/components/cards/create-post-card";
-import { UseQueryResult } from "@tanstack/react-query";
+import { UseQueryResult, useQuery } from "@tanstack/react-query";
 import { IPost } from "@/types/post-types";
 import sadSvg from "@/assets/svg/individual/sad.svg";
 import PostComponent from "@/app/components/post/post-component";
+import { IUser } from "@/types/user-types";
 const Profile = ({ qPosts }: { qPosts: UseQueryResult<IPost, Error>[] }) => {
   const navigate = useNavigate();
-  const { currentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
   const { user, isLoading } = useUserProfileStore();
   const isOwner = user?.username === currentUser?.username;
   const isFollowing = false;

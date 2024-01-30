@@ -6,12 +6,12 @@ import { cn } from "../../../lib/utils";
 import CommentsComp from "./comments-comp";
 import { motion } from "framer-motion";
 import { IPost } from "@/types/post-types";
-import useAuthStore from "@/app/providers/auth-providers";
 import { Skeleton } from "../ui/skeleton";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import PostHandler from "@/handlers/post-handlers";
 import { handlePostShare } from "./utils";
 import React from "react";
+import { IUser } from "@/types/user-types";
 
 const PostReactionFooter = ({
   post,
@@ -23,7 +23,9 @@ const PostReactionFooter = ({
   isLoading: boolean;
 }) => {
   const queryClient = useQueryClient();
-  const { currentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
 
   const toggleLike = useMutation({
     mutationFn: (isToLike: boolean) =>

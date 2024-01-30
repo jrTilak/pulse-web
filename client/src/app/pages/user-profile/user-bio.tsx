@@ -4,13 +4,17 @@ import { Button } from "@/app/components/ui/button";
 import { cn } from "@/lib/utils";
 import ReactLoading from "react-loading";
 import { shadow } from "@/assets/constants/styles";
-import useAuthStore from "@/app/providers/auth-providers";
 import useUserProfileStore from "@/app/providers/user-profile-provider";
 import UserHandler from "@/handlers/user-handlers";
 import toast from "react-hot-toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { IUser } from "@/types/user-types";
 
 const UserBio = () => {
-  const { currentUser, setCurrentUser } = useAuthStore((state) => state);
+  const { data: currentUser } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
+  });
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [oldBio, setOldBio] = useState(currentUser?.bio || "");
   const bioRef = useRef<HTMLParagraphElement>(null);
@@ -45,7 +49,7 @@ const UserBio = () => {
       bio: bioRef.current.innerText,
     })
       .then((user) => {
-        setCurrentUser(user);
+        queryClient.setQueryData(["currentUser"], user);
         setUser(user);
       })
       .catch((err) => {

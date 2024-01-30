@@ -15,14 +15,14 @@ import { useState } from "react";
 import Loading from "react-loading";
 import { useNavigate } from "react-router-dom";
 import { UserAuthHandler } from "@/handlers/auth-handlers";
-import useAuthStore from "@/app/providers/auth-providers";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const GuestLogin = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setCurrentUser } = useAuthStore((state) => state);
+  const queryClient = useQueryClient();
 
   const handleSubmit = async () => {
     if (name.length < 3 || name.length > 20) {
@@ -32,7 +32,7 @@ const GuestLogin = () => {
     setIsSubmitting(true);
     await UserAuthHandler.createGuestUser(name)
       .then((res) => {
-        setCurrentUser(res);
+        queryClient.setQueryData(["currentUser"], res);
         navigate("/feed");
       })
       .catch((err) => {

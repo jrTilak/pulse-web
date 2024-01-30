@@ -1,6 +1,5 @@
 import LoadingPage from "@/app/pages/shared/loading-page";
 import { UserAuthHandler } from "@/handlers/auth-handlers";
-import useAuthStore from "@/app/providers/auth-providers";
 import { IUser } from "@/types/user-types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -12,36 +11,36 @@ const NO_AUTH_ROUTES = ["/login", "/signup", "/"];
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { pathname: currentPath } = useLocation();
-  const { setCurrentUser, currentUser } = useAuthStore(
-    (state) => state
-  );
-  const { data, isError, isLoading } = useQuery<IUser, string>({
-    queryKey: ["verifyUser"],
+  const {
+    data: currentUser,
+    isError,
+    isLoading,
+  } = useQuery<IUser, string>({
+    queryKey: ["currentUser"],
     queryFn: UserAuthHandler.verifyUser,
   });
 
   //get saved posts
   useQuery({
     queryKey: ["savedPosts"],
-    enabled: currentUser?.username !== undefined ,
+    enabled: currentUser?.username !== undefined,
     queryFn: () => PostHandler.getSavedPosts(currentUser?.username || ""),
   });
 
   useEffect(() => {
     if (isLoading) return;
-    if (isError || !data) {
+    if (isError || !currentUser) {
       if (!NO_AUTH_ROUTES.includes(currentPath)) {
         navigate(`/login?redirect=${currentPath}`, { replace: true });
       }
       return;
     }
-    setCurrentUser(data);
     if (NO_AUTH_ROUTES.includes(currentPath)) {
       navigate("/feed", { replace: true });
     } else {
       navigate(currentPath, { replace: true });
     }
-  }, [data]);
+  }, [currentUser, isError, isLoading, navigate, currentPath]);
 
   if (isLoading) return <LoadingPage />;
   return <>{children}</>;

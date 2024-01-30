@@ -5,8 +5,6 @@ import { useParams } from "react-router-dom";
 import useUserProfileStore from "@/app/providers/user-profile-provider";
 import { useEffect } from "react";
 import PostHandler from "@/handlers/post-handlers";
-import { IPost } from "@/types/post-types";
-import useAuthStore from "@/app/providers/auth-providers";
 
 const ProfilePage = () => {
   const { username } = useParams<{ username: string }>();
