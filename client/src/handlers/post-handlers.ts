@@ -53,10 +53,10 @@ export default class PostHandler {
   };
 
   public static handleAddCommentToPost = (
-    comment: IPostComment,
+    comment: string,
     postId: string
-  ): Promise<IPost["comments"]> => {
-    return fetchUrl<IPost["comments"]>(`/post/${postId}/comment`, "POST", {
+  ): Promise<string> => {
+    return fetchUrl<string>(`/post/${postId}/comment`, "POST", {
       comment,
     });
   };

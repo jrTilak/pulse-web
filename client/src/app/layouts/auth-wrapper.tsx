@@ -5,16 +5,26 @@ import { IUser } from "@/types/user-types";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import PostHandler from "@/handlers/post-handlers";
 
 const NO_AUTH_ROUTES = ["/login", "/signup", "/"];
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { pathname: currentPath } = useLocation();
-  const { setCurrentUser } = useAuthStore((state) => state);
+  const { setCurrentUser, currentUser } = useAuthStore(
+    (state) => state
+  );
   const { data, isError, isLoading } = useQuery<IUser, string>({
     queryKey: ["verifyUser"],
     queryFn: UserAuthHandler.verifyUser,
+  });
+
+  //get saved posts
+  useQuery({
+    queryKey: ["savedPosts"],
+    enabled: currentUser?.username !== undefined ,
+    queryFn: () => PostHandler.getSavedPosts(currentUser?.username || ""),
   });
 
   useEffect(() => {

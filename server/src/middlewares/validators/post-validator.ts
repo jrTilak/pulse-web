@@ -67,11 +67,7 @@ export class PostValidator {
   ) {
     try {
       const { comment } = req.body;
-      const commentSchema = z.object({
-        content: z.string().min(1).max(600),
-        createdBy: z.string(),
-        createdAt: z.date().default(() => new Date()),
-      });
+      const commentSchema = z.string().min(1).max(600);
       commentSchema.parse(comment);
       return next();
     } catch (error) {

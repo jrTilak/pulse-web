@@ -1,4 +1,3 @@
-import { IPost } from "@/types/post-types";
 import { IUser } from "@/types/user-types";
 import { create } from "zustand";
 
@@ -9,8 +8,6 @@ interface UserProfileState {
   setIsError: (isError: boolean) => void;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
-  posts: IPost[];
-  setPosts: (posts: IPost[]) => void;
 }
 
 const useUserProfileState = create<UserProfileState>((set) => ({
@@ -20,8 +17,6 @@ const useUserProfileState = create<UserProfileState>((set) => ({
   setIsError: (isError) => set({ isError: isError }),
   isLoading: true, // default to true as we are fetching data
   setIsLoading: (isLoading) => set({ isLoading: isLoading }),
-  posts: [],
-  setPosts: (posts) => set({ posts: posts }),
 }));
 
 const useUserProfileStore = () => useUserProfileState((state) => state);

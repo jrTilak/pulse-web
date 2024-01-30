@@ -6,10 +6,11 @@ import useUserProfileStore from "@/app/providers/user-profile-provider";
 import { useEffect } from "react";
 import PostHandler from "@/handlers/post-handlers";
 import { IPost } from "@/types/post-types";
+import useAuthStore from "@/app/providers/auth-providers";
 
 const ProfilePage = () => {
   const { username } = useParams<{ username: string }>();
-  const { setUser, setIsError, setIsLoading, setPosts } = useUserProfileStore();
+  const { setUser, setIsError, setIsLoading } = useUserProfileStore();
   const { data, isError, isLoading } = useQuery({
     queryKey: ["user-profile", username],
     queryFn: () => UserHandler.getUserByUsername(username || ""),
@@ -25,7 +26,7 @@ const ProfilePage = () => {
     }) || [];
 
   const results = useQueries({ queries });
-  
+
   useEffect(() => {
     setIsLoading(isLoading);
     setIsError(isError);
@@ -35,19 +36,6 @@ const ProfilePage = () => {
       setIsError(false);
     };
   }, [isLoading, isError, data]);
-
-  useEffect(() => {
-    const posts = results
-      ?.map((result) => result.data as IPost)
-      .filter((post) => post);
-
-    if (JSON.stringify(posts) !== JSON.stringify(posts)) {
-      setPosts(posts);
-    }
-  }, [results]);
-
-
-  
 
   return (
     <ProfileComp

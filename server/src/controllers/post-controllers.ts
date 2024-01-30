@@ -5,6 +5,7 @@ import Draft from "../schema/Draft";
 import UserPrivateInfo from "../schema/UserPrivateInfo";
 import ResponseController from "./reponse-controllers";
 import PostUtils from "../utils/post-utils";
+import mongoose from "mongoose";
 
 export class PostController {
   /**
@@ -101,15 +102,18 @@ export class PostController {
    */
   public static getSavedPosts = async (req: Request, res: Response) => {
     try {
+      const userId = new mongoose.Types.ObjectId(res.locals.jwtData.id);
       const userPrivateInfo = await UserPrivateInfo.findOne({
-        userId: res.locals.jwtData.id,
+        userId,
       });
+      console.log(userPrivateInfo);
       return ResponseController.HandleSuccessResponse(res, {
         status: 200,
         message: "Posts found!",
-        data: userPrivateInfo.savedPosts,
+        data: userPrivateInfo?.savedPosts || [],
       });
     } catch (error) {
+      console.log(error);
       return ResponseController.Handle500Error(res, error);
     }
   };
@@ -195,7 +199,7 @@ export class PostController {
       await UserPrivateInfo.findOneAndUpdate(
         { userId: res.locals.jwtData.id },
         isToSave
-          ? { $push: { savedPosts: postId } }
+          ? { $addToSet: { savedPosts: postId } }
           : { $pull: { savedPosts: postId } },
         { new: true }
       );
@@ -256,7 +260,15 @@ export class PostController {
       const { comment } = req.body;
       const newPost = await Post.findOneAndUpdate(
         { _id: req.params.postId },
-        { $push: { comments: comment } },
+        {
+          $push: {
+            comments: {
+              content: comment,
+              createdBy: res.locals.jwtData.id,
+              createdAt: Date.now(),
+            },
+          },
+        },
         { new: true }
       );
 

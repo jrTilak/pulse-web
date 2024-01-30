@@ -15,6 +15,7 @@ import DateUtils from "@/utils/date-utils";
 import { IPost } from "@/types/post-types";
 import { Skeleton } from "../ui/skeleton";
 import useAuthStore from "@/app/providers/auth-providers";
+import { useQuery } from "@tanstack/react-query";
 
 interface PostComponentProps {
   post: IPost;
@@ -28,6 +29,9 @@ const PostComponent = ({
   isLoading = false,
 }: PostComponentProps) => {
   const { currentUser } = useAuthStore((state) => state);
+  const { data: savedPosts = [] } = useQuery<string[]>({
+    queryKey: ["savedPosts"],
+  });
   return (
     <motion.div
       layout
@@ -103,7 +107,7 @@ const PostComponent = ({
       <PostReactionFooter
         isLoading={isLoading}
         post={post}
-        isSaved={false} //todo
+        isSaved={savedPosts?.includes(post?._id as string)}
       />
     </motion.div>
   );

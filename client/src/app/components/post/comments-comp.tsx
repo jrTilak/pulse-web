@@ -7,23 +7,29 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/app/components/ui/sheet";
-import { IPost, IPostComment } from "@/types/post-types";
+import { IPost } from "@/types/post-types";
 import { useState } from "react";
 import { IoIosArrowDropright } from "react-icons/io";
 import { PiChatCircleLight } from "react-icons/pi";
 import Loading from "react-loading";
 import Comment from "./comment";
-import PostHandler from "@/handlers/post-handlers";
 import { ArrayUtils } from "@/utils/array-utils";
-import useAuthStore from "@/app/providers/auth-providers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import PostHandler from "@/handlers/post-handlers";
+import toast from "react-hot-toast";
 
 const CommentsComp = ({ post }: { post: IPost }) => {
-  const { currentUser } = useAuthStore();
+  const queryClient = useQueryClient();
   const [commentVal, setCommentVal] = useState("");
-  const [comments, setComments] = useState<IPostComment[]>(post.comments);
-
-  const [isCommenting, setIsCommenting] = useState(false);
-
+  const comment = useMutation({
+    mutationFn: () => PostHandler.handleAddCommentToPost(commentVal, post?._id),
+    onError: () => toast.error("Failed to add comment"),
+    onSuccess: () => {
+      toast.success("Thanks for your comment!");
+      setCommentVal("");
+      queryClient.invalidateQueries({ queryKey: ["post", post?._id || ""] });
+    },
+  });
   return (
     <Sheet>
       <SheetTrigger>
@@ -37,12 +43,12 @@ const CommentsComp = ({ post }: { post: IPost }) => {
           <SheetTitle>Comments</SheetTitle>
         </SheetHeader>
         <ScrollArea className="flex flex-col gap-2 w-full h-full">
-          {comments.length === 0 ? (
+          {post?.comments?.length === 0 ? (
             <div className="flex items-center justify-center w-full h-full m-auto text-muted-foreground">
               No comments yet
             </div>
           ) : (
-            ArrayUtils.sortByCreatedAt(comments).map((c, i) => (
+            ArrayUtils.sortByCreatedAt(post?.comments).map((c, i) => (
               <Comment comment={c} key={i} />
             ))
           )}
@@ -59,12 +65,15 @@ const CommentsComp = ({ post }: { post: IPost }) => {
             className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none"
           />
           <Button
-            // onClick={(e) => addComment(e)}
+            onClick={(e) => {
+              e.preventDefault();
+              comment.mutate();
+            }}
             variant="secondary"
             type="submit"
             className="p-2 rounded"
           >
-            {isCommenting ? (
+            {comment.isPending ? (
               <Loading type="spin" color="black" height={20} width={20} />
             ) : (
               <IoIosArrowDropright className="w-6 h-6" />
