@@ -17,8 +17,12 @@ import { Skeleton } from "@/app/components/ui/skeleton";
 import UserBio from "./user-bio";
 import SocialLinkBadge from "@/app/components/badges/social-link-badge";
 import AddSocialLinkButton from "./add-social-link-button";
-
-const Profile = () => {
+import CreatePostCard from "@/app/components/cards/create-post-card";
+import { UseQueryResult } from "@tanstack/react-query";
+import { IPost } from "@/types/post-types";
+import sadSvg from "@/assets/svg/individual/sad.svg";
+import PostComponent from "@/app/components/post/post-component";
+const Profile = ({ qPosts }: { qPosts: UseQueryResult<IPost, Error>[] }) => {
   const navigate = useNavigate();
   const { currentUser } = useAuthStore((state) => state);
   const { user, isLoading } = useUserProfileStore();
@@ -209,35 +213,36 @@ const Profile = () => {
               </div>
               <div className="h-full blank"></div>
             </div>
-            {/* <div className="flex flex-col col-span-4 gap-4 rounded-md">
+            <div className="flex flex-col col-span-4 gap-4 rounded-md">
               {isOwner && <CreatePostCard />}
-              {posts.map(
-                (post) =>
-                  post.isPinned && (
+              {qPosts?.map(
+                ({ data: post, isLoading }) =>
+                  post?.isPinned && (
                     <PostComponent
                       key={post._id}
-                      post={post as PostType}
-                      setUserPosts={setPosts}
+                      post={post as IPost}
                       isPinned={true}
+                      isLoading={isLoading}
                     />
                   )
               )}
-              {posts.map(
-                (post) =>
-                  !post.isPinned && (
+              {qPosts?.map(
+                ({ data: post, isLoading }) =>
+                  !post?.isPinned && (
                     <PostComponent
-                      key={post._id}
-                      post={post as PostType}
-                      setUserPosts={setPosts}
+                      key={post?._id}
+                      post={post as IPost}
                       isPinned={false}
+                      isLoading={isLoading}
                     />
                   )
               )}
 
-              <span className="flex items-center justify-center w-full h-full text-xl font-semibold text-center text-muted-foreground">
-                {posts.length === 0 ? "No posts yet!" : "End of posts!"}
+              <span className="flex items-center flex-col justify-center w-full h-full text-xl font-semibold text-center text-muted-foreground">
+                <img src={sadSvg} alt="" className="w-32" />
+                {qPosts.length === 0 ? "No posts yet!" : "End of posts!"}
               </span>
-            </div> */}
+            </div>
           </div>
         </div>
       </section>

@@ -1,4 +1,4 @@
-import {  Request, Response } from "express";
+import { Request, Response } from "express";
 import Post from "../schema/Post";
 import User from "../schema/User";
 import Draft from "../schema/Draft";
@@ -289,6 +289,26 @@ export class PostController {
         createdBy: { $nin: res.locals.jwtData.id },
       });
       const user = await User.findOne({ _id: post?.createdBy });
+      return ResponseController.HandleSuccessResponse(res, {
+        status: 200,
+        message: "Posts found!",
+        data: PostUtils.appendSingleUser(post, user),
+      });
+    } catch (error) {
+      return ResponseController.Handle500Error(res, error);
+    }
+  };
+
+  /**
+   * Retrieves a post by id.
+   * @param req - The request object.
+   * @param res - The response object.
+   * @returns A Promise that resolves to the response containing the post.
+   */
+  public static getPostById = async (req: Request, res: Response) => {
+    try {
+      const post = (await Post.findById(req.params.postId)).toJSON();
+      const user = (await User.findOne({ _id: post?.createdBy })).toJSON();
       return ResponseController.HandleSuccessResponse(res, {
         status: 200,
         message: "Posts found!",

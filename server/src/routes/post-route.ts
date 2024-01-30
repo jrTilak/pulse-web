@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { verifyToken } from "../utils/token-manager";
 import { PostController } from "../controllers/post-controllers";
-import { PostValidator } from "../middlewares/validators/post.validator";
+import { PostValidator } from "../middlewares/validators/post-validator";
 
 const postRouter = Router();
 
@@ -16,6 +16,7 @@ postRouter.get(
   verifyToken,
   PostController.getSavedPosts
 );
+postRouter.get("/id/:postId", PostController.getPostById);
 
 /**
  * @POST - routes

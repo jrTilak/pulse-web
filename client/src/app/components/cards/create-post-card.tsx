@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { cn } from "../../../lib/utils";
-import { Button } from "../../ui/button";
+import { cn } from "@/lib/utils";
+import { Button } from "@/app/components/ui/button";
 import { motion } from "framer-motion";
 import { shadow } from "@/assets/constants/styles";
 import { AVATAR_PLACEHOLDER } from "@/assets/constants/placeholders";
-import useAuthStore from "@/providers/auth-providers";
-import UserImageOnly from "../avatars/user-image-only";
+import useAuthStore from "@/app/providers/auth-providers";
+import UserImageOnly from "@/app/components/avatars/user-image-only";
 
 const createPostCardButtons = [
   {
@@ -35,7 +35,7 @@ const CreatePostCard = () => {
       className={cn("rounded-md  flex flex-col p-3 px-4 shadow", shadow.sm)}
     >
       <div className="flex items-center pb-3 mb-2 space-x-2 border-b">
-      <UserImageOnly
+        <UserImageOnly
           img={currentUser?.profileImg || AVATAR_PLACEHOLDER}
           isOnline={currentUser?.isOnline || false}
           className="w-10 h-10"

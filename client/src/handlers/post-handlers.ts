@@ -1,18 +1,17 @@
-import { CommentType, PostContentType } from "@/validators/post.validators";
 import { fetchUrl } from "./handler";
-import { PostType } from "@/types/post.types";
+import { IPost, IPostComment, IPostContent } from "@/types/post-types";
 
 export default class PostHandler {
-  public static createANewPost = (post: PostContentType): Promise<PostType> => {
-    return fetchUrl<PostType>("/post/new", "POST", post);
+  public static createANewPost = (post: IPostContent): Promise<IPost> => {
+    return fetchUrl<IPost>("/post/new", "POST", post);
   };
 
-  public static getUsersAllPosts = (username: string): Promise<PostType[]> => {
-    return fetchUrl<PostType[]>(`/post/${username}/all`, "GET");
+  public static getUsersAllPosts = (username: string): Promise<IPost[]> => {
+    return fetchUrl<IPost[]>(`/post/${username}/all`, "GET");
   };
 
-  public static createADraft = (post: PostContentType): Promise<PostType> => {
-    return fetchUrl<PostType>("/post/draft", "POST", post);
+  public static createADraft = (post: IPostContent): Promise<IPost> => {
+    return fetchUrl<IPost>("/post/draft", "POST", post);
   };
 
   public static getSavedPosts = (username: string): Promise<string[]> => {
@@ -46,23 +45,26 @@ export default class PostHandler {
   public static handleToggleLikePost = (
     postId: string,
     isToLike: boolean
-  ): Promise<PostType> => {
-    return fetchUrl<PostType>(
+  ): Promise<IPost> => {
+    return fetchUrl<IPost>(
       `/post/${postId}/like`,
       isToLike ? "POST" : "DELETE"
     );
   };
 
   public static handleAddCommentToPost = (
-    comment: CommentType,
+    comment: IPostComment,
     postId: string
-  ): Promise<PostType["comments"]> => {
-    return fetchUrl<PostType["comments"]>(`/post/${postId}/comment`, "POST", {
+  ): Promise<IPost["comments"]> => {
+    return fetchUrl<IPost["comments"]>(`/post/${postId}/comment`, "POST", {
       comment,
     });
   };
 
-  public static getRelevantPost = (neglect: string[]): Promise<PostType> => {
-    return fetchUrl<PostType>("/post/relevant", "GET", { neglect });
+  public static getRelevantPost = (neglect: string[]): Promise<IPost> => {
+    return fetchUrl<IPost>("/post/relevant", "GET", { neglect });
+  };
+  public static getPostById = (postId: string): Promise<IPost> => {
+    return fetchUrl<IPost>(`/post/id/${postId}`, "GET");
   };
 }
