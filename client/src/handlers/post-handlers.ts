@@ -62,7 +62,10 @@ export default class PostHandler {
   };
 
   public static getRelevantPost = (neglect: string[]): Promise<IPost> => {
-    return fetchUrl<IPost>("/post/relevant", "GET", { neglect });
+    return fetchUrl<IPost>(
+      `/post/relevant?neglect=${neglect.join(",")}`,
+      "GET"
+    );
   };
   public static getPostById = (postId: string): Promise<IPost> => {
     return fetchUrl<IPost>(`/post/id/${postId}`, "GET");

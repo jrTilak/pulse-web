@@ -5,7 +5,7 @@ const LandingPage = React.lazy(
 );
 const UserLogin = React.lazy(() => import("@/app/pages/auth/user-login"));
 const UserSignup = React.lazy(() => import("@/app/pages/auth/user-signup"));
-// const FeedPage = React.lazy(() => import("@/app/pages/feed/feed-page"));
+const FeedPage = React.lazy(() => import("@/app/pages/feed/feed-page"));
 const ProfilePage = React.lazy(
   () => import("@/app/pages/user-profile/profile-page")
 );
@@ -58,10 +58,10 @@ const ROUTES: RouteType[] = [
     Component: UserSignup,
     noLayout: true,
   },
-  // {
-  //   path: "/feed",
-  //   Component: FeedPage,
-  // },
+  {
+    path: "/feed",
+    Component: FeedPage,
+  },
   {
     path: "/u/:username",
     Component: ProfilePage,

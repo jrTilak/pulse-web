@@ -106,14 +106,12 @@ export class PostController {
       const userPrivateInfo = await UserPrivateInfo.findOne({
         userId,
       });
-      console.log(userPrivateInfo);
       return ResponseController.HandleSuccessResponse(res, {
         status: 200,
         message: "Posts found!",
         data: userPrivateInfo?.savedPosts || [],
       });
     } catch (error) {
-      console.log(error);
       return ResponseController.Handle500Error(res, error);
     }
   };
@@ -293,18 +291,23 @@ export class PostController {
    * @returns A Promise that resolves to the response containing the relevant posts.
    */
   public static getRelevantPost = async (req: Request, res: Response) => {
-    const neglect = req.body.neglect || ([] as string[]);
+    const { neglect } = req.query;
+    const toNeglect = neglect ? (neglect as string).split(",") : [];
 
     try {
       const post = await Post.findOne({
-        _id: { $nin: neglect },
+        _id: { $nin: toNeglect },
         createdBy: { $nin: res.locals.jwtData.id },
       });
+      if (!post) {
+        return ResponseController.Handle404Error(res, []);
+      }
+      console.log(post);
       const user = await User.findOne({ _id: post?.createdBy });
       return ResponseController.HandleSuccessResponse(res, {
         status: 200,
         message: "Posts found!",
-        data: PostUtils.appendSingleUser(post, user),
+        data: PostUtils.appendSingleUser(post.toJSON(), user.toJSON()),
       });
     } catch (error) {
       return ResponseController.Handle500Error(res, error);

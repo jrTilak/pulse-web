@@ -19,14 +19,14 @@ import { IUser } from "@/types/user-types";
 
 interface PostComponentProps {
   post: IPost;
-  isPinned: boolean;
+  isPinned?: boolean;
   isLoading: boolean;
 }
 
 const PostComponent = ({
   post,
   isPinned = false,
-  isLoading = false,
+  isLoading,
 }: PostComponentProps) => {
   const { data: currentUser } = useQuery<IUser, string>({
     queryKey: ["currentUser"],

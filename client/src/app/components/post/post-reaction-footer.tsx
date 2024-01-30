@@ -78,7 +78,7 @@ const PostReactionFooter = ({
               if (r.label === "like") {
                 return (
                   <React.Fragment key={r.label}>
-                    {post.likes.includes(currentUser?._id as string) ? (
+                    {post?.likes?.includes(currentUser?._id as string) ? (
                       <motion.button
                         layout
                         onClick={() => r.action(false)}
@@ -89,7 +89,7 @@ const PostReactionFooter = ({
                       >
                         <r.active className="h-7 w-7 " />
                         <span className="font-semibold">
-                          {post.likes.length}
+                          {post?.likes?.length || 0}
                         </span>
                       </motion.button>
                     ) : (
@@ -100,7 +100,7 @@ const PostReactionFooter = ({
                       >
                         <r.icon className=" h-7 w-7 group-hover:text-red-500" />
                         <span className="font-semibold">
-                          {post.likes.length}
+                          {post?.likes?.length || 0}
                         </span>
                       </motion.button>
                     )}

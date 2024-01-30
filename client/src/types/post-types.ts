@@ -1,6 +1,8 @@
 import { IUser } from "./user-types";
 
 export interface IPost {
+  length: number;
+  nextPage: unknown;
   _id: string;
   createdBy: string;
   createdAt: string;

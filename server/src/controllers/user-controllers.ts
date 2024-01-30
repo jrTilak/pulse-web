@@ -4,6 +4,7 @@ import UserPrivateInfo from "../schema/UserPrivateInfo";
 import UserStory from "../schema/UserStory";
 import ResponseController from "./reponse-controllers";
 import ObjUtils from "../utils/obj-utils";
+import mongoose from "mongoose";
 // import agenda from "./agenda-event-controllers";
 
 export default class UserController {
@@ -275,7 +276,7 @@ export default class UserController {
   public static getSuggestedUsers = async (req: Request, res: Response) => {
     try {
       const user = await UserPrivateInfo.findOne({
-        userId: res.locals.jwtData.id,
+        userId: new mongoose.Types.ObjectId(res.locals.jwtData.id),
       });
       const suggestedUsers = await User.find({
         _id: { $nin: [...user.following, user.userId] },

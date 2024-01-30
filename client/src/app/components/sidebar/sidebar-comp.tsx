@@ -1,18 +1,22 @@
 import { FiLogOut } from "react-icons/fi";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/logo.png";
 import { navLinks } from "./nav-links";
 import { cn } from "../../../lib/utils";
 import { motion } from "framer-motion";
 import { AVATAR_PLACEHOLDER } from "@/assets/constants/placeholders";
 import SidebarProfile from "./sidebar-profile";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
+import { UserAuthHandler } from "@/handlers/auth-handlers";
+import toast from "react-hot-toast";
 
 const SidebarComp = () => {
   const { data: currentUser } = useQuery<IUser, string>({
     queryKey: ["currentUser"],
   });
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const isSidebarCollapsed = false;
   const pathname = useLocation().pathname;
   const sidebar = {
@@ -48,6 +52,18 @@ const SidebarComp = () => {
       opacity: 0,
     },
   };
+
+  const handleLogoutUser = useMutation({
+    mutationFn: UserAuthHandler.logoutUser,
+    onSuccess: () => {
+      navigate("/login");
+      toast.success("Logged out successfully");
+      queryClient.removeQueries({ queryKey: ["currentUser"] });
+    },
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+  });
 
   return (
     <>
@@ -181,7 +197,7 @@ const SidebarComp = () => {
             <motion.div
               initial={itemVariants.closed}
               animate={itemVariants.open(navLinks.length + 6)}
-              // onClick={handleLogoutUser}
+              onClick={() => handleLogoutUser.mutate()}
               className={cn(
                 "items-center gap-3 p-2 rounded-md cursor-pointer md:flex hover:bg-background",
                 isSidebarCollapsed ? "" : "max-xl:justify-center"
