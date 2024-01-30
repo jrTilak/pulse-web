@@ -24,8 +24,8 @@ interface PostComponentProps {
 
 const PostComponent = ({
   post,
-  isLoading,
   isPinned = false,
+  isLoading = false,
 }: PostComponentProps) => {
   const { currentUser } = useAuthStore((state) => state);
   return (
@@ -77,7 +77,6 @@ const PostComponent = ({
           <ThreeDotsMenu
             isOwner={post?.owner?._id === currentUser?._id}
             isPinned={isPinned}
-            isSaved={false} //todo
             post={post}
           />
         ) : (

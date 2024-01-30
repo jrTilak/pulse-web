@@ -1,4 +1,3 @@
-import { MdOutlineBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
 import { TiPin } from "react-icons/ti";
 import { TbPinnedOff } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
@@ -8,7 +7,6 @@ import { LuClipboardList } from "react-icons/lu";
 import { MdReportGmailerrorred } from "react-icons/md";
 import { MdDeleteOutline } from "react-icons/md";
 import { handlePostShare } from "./utils";
-import PostHandler from "@/handlers/post-handlers";
 import { IPost } from "@/types/post-types";
 import toast from "react-hot-toast";
 import {
@@ -19,19 +17,40 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import PostHandler from "@/handlers/post-handlers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function ThreeDotsMenu({
   post,
   isOwner,
-  isSaved,
   isPinned,
 }: {
   post: IPost;
   isOwner: boolean;
   isPinned: boolean;
-  isSaved: boolean;
 }) {
-  const deletePost = async () => {};
+  const queryClient = useQueryClient();
+  const togglePin = useMutation({
+    mutationFn: (isToPin: boolean) =>
+      PostHandler.handleTogglePinPost(post._id, isToPin),
+    onSuccess: () => {
+      toast.success("Post pinned");
+      queryClient.invalidateQueries({ queryKey: ["post", post._id] });
+    },
+    onError: () => {
+      toast.error("Failed to pin post");
+    },
+  });
+  const deletePost = useMutation({
+    mutationFn: () => PostHandler.handleDeletePost(post._id),
+    onSuccess: () => {
+      toast.success("Post deleted");
+      queryClient.removeQueries({ queryKey: ["post", post._id] });
+    },
+    onError: () => {
+      toast.error("Failed to delete post");
+    },
+  });
   const handleCopyLink = () => {
     try {
       navigator.clipboard.writeText(window.location.host + `/post/${post._id}`);
@@ -40,8 +59,6 @@ export function ThreeDotsMenu({
       toast.error("Failed to copy link");
     }
   };
-
-  const togglePin = async (isToPin: boolean) => {};
 
   const handleReport = () => {
     setTimeout(() => {
@@ -57,31 +74,15 @@ export function ThreeDotsMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" side="left" align="start">
-        {isSaved ? (
-          <DropdownMenuItem
-          // onClick={() => togglePostSave(false)}
-          >
-            <MdOutlineBookmark className="w-4 h-4 mr-2 text-primary" />
-            <span>Unsave Post</span>
-          </DropdownMenuItem>
-        ) : (
-          <DropdownMenuItem
-          // onClick={() => togglePostSave(true)}
-          >
-            <MdOutlineBookmarkBorder className="w-4 h-4 mr-2 hover:text-primary" />
-            <span>Save Post</span>
-          </DropdownMenuItem>
-        )}
-
         {isOwner && (
           <>
             {isPinned ? (
-              <DropdownMenuItem onClick={() => togglePin(false)}>
+              <DropdownMenuItem onClick={() => togglePin.mutate(false)}>
                 <TbPinnedOff className="w-4 h-4 mr-2" />
                 <span>Unpin Post</span>
               </DropdownMenuItem>
             ) : (
-              <DropdownMenuItem onClick={() => togglePin(true)}>
+              <DropdownMenuItem onClick={() => togglePin.mutate(true)}>
                 <TiPin className="w-4 h-4 mr-2" />
                 <span>Pin Post</span>
               </DropdownMenuItem>
@@ -100,7 +101,7 @@ export function ThreeDotsMenu({
         <DropdownMenuSeparator />
         {isOwner ? (
           <DropdownMenuItem
-            onClick={deletePost}
+            onClick={() => deletePost.mutate()}
             className="text-red-500 hover:text-foreground"
           >
             <MdDeleteOutline className="w-4 h-4 mr-2" />

@@ -13,7 +13,6 @@ export interface IPost {
 }
 
 export interface IPostContent {
-  _id: string;
   text: string;
   images: string[];
   video: string;

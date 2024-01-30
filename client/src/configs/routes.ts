@@ -9,13 +9,13 @@ const UserSignup = React.lazy(() => import("@/app/pages/auth/user-signup"));
 const ProfilePage = React.lazy(
   () => import("@/app/pages/user-profile/profile-page")
 );
-// const CreateNew = React.lazy(() => import("@/app/pages/new/create-new"));
+const CreateNew = React.lazy(() => import("@/app/pages/new/create-new"));
 // const CreateNewStory = React.lazy(
 //   () => import("@/app/pages/new/new-story/create-new-story")
 // );
-// const CreateNewPost = React.lazy(
-//   () => import("@/app/pages/new/new-post/create-new-post")
-// );
+const CreateNewPost = React.lazy(
+  () => import("@/app/pages/new/new-post/create-new-post")
+);
 // const SearchPage = React.lazy(
 //   () => import("@/app/pages/search/search-page")
 // );
@@ -66,22 +66,18 @@ const ROUTES: RouteType[] = [
     path: "/u/:username",
     Component: ProfilePage,
   },
-  // {
-  //   path: "/new",
-  //   Component: CreateNew,
-  // },
+  {
+    path: "/new",
+    Component: CreateNew,
+  },
   // {
   //   path: "/new/story",
   //   Component: CreateNewStory,
   // },
-  // {
-  //   path: "/new/story/:type",
-  //   Component: CreateNewStory,
-  // },
-  // {
-  //   path: "/new/post",
-  //   Component: CreateNewPost,
-  // },
+  {
+    path: "/new/post",
+    Component: CreateNewPost,
+  },
   // {
   //   path: "/search",
   //   Component: SearchPage,

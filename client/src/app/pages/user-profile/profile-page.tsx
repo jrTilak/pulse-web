@@ -25,6 +25,7 @@ const ProfilePage = () => {
     }) || [];
 
   const results = useQueries({ queries });
+  
   useEffect(() => {
     setIsLoading(isLoading);
     setIsError(isError);
@@ -45,6 +46,17 @@ const ProfilePage = () => {
     }
   }, [results]);
 
-  return <ProfileComp qPosts={results} />;
+
+  
+
+  return (
+    <ProfileComp
+      qPosts={results.sort(
+        (a, b) =>
+          new Date(b?.data?.createdAt || "").getTime() -
+          new Date(a?.data?.createdAt || "").getTime()
+      )}
+    />
+  );
 };
 export default ProfilePage;
