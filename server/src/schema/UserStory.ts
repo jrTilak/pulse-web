@@ -33,7 +33,6 @@ const UserStorySchema = new mongoose.Schema({
     type: {
       isBold: Boolean,
       isItalic: Boolean,
-      isUnderline: Boolean,
       isUnderlined: Boolean,
       fontSize: Number,
       textColor: String,

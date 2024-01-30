@@ -10,9 +10,9 @@ const ProfilePage = React.lazy(
   () => import("@/app/pages/user-profile/profile-page")
 );
 const CreateNew = React.lazy(() => import("@/app/pages/new/create-new"));
-// const CreateNewStory = React.lazy(
-//   () => import("@/app/pages/new/new-story/create-new-story")
-// );
+const CreateNewStory = React.lazy(
+  () => import("@/app/pages/new/new-story/create-new-story")
+);
 const CreateNewPost = React.lazy(
   () => import("@/app/pages/new/new-post/create-new-post")
 );
@@ -70,10 +70,14 @@ const ROUTES: RouteType[] = [
     path: "/new",
     Component: CreateNew,
   },
-  // {
-  //   path: "/new/story",
-  //   Component: CreateNewStory,
-  // },
+  {
+    path: "/new/story",
+    Component: CreateNewStory,
+  },
+  {
+    path: "/new/story/:type",
+    Component: CreateNewStory,
+  },
   {
     path: "/new/post",
     Component: CreateNewPost,

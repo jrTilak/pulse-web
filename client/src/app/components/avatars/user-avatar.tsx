@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/app/components/ui/dialog";
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import { useState } from "react";
+import StoryCard from "../cards/story-card";
 // import StoryCard from "@/app/components/cards/story-card";
 
 const UserAvatar = ({
@@ -76,13 +77,13 @@ const UserAvatar = ({
             >
               <IoIosArrowDropleft className="text-3xl" />
             </button>
-            {/* <StoryCard //todo: fix this
+            <StoryCard
               currentStoryIndex={visibleStoryIndex}
               prevStoryIndex={prevVisibleStoryIndex}
               _id={user?.stories[visibleStoryIndex]}
               user={user}
               setIsDialogOpen={setIsDialogOpen}
-            /> */}
+            />
             <button
               onClick={() => {
                 if (visibleStoryIndex < user?.stories?.length - 1) {

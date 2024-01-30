@@ -2,7 +2,7 @@ import { Router } from "express";
 import authRouter from "./auth-route";
 // import chatRouter from "./chat-route";
 import postRouter from "./post-route";
-// import storyRouter from "./story-route";
+import storyRouter from "./story-route";
 // import fileRouter from "./file-route";
 import userRouter from "./user-route";
 
@@ -17,7 +17,7 @@ appRouter.get("/", (req, res) => {
 appRouter.use("/auth", authRouter);
 // appRouter.use("/chats", chatRouter);
 appRouter.use("/post", postRouter);
-// appRouter.use("/story", storyRouter);
+appRouter.use("/story", storyRouter);
 appRouter.use("/user", userRouter);
 // appRouter.use("/file", fileRouter);
 

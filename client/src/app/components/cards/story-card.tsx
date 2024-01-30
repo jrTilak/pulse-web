@@ -1,9 +1,5 @@
 import { shadow } from "@/assets/constants/styles";
 import { cn } from "@/lib/utils";
-import { UserStoryType } from "@/types/story.types";
-import { useEffect, useRef, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { UserType } from "@/types/user.types";
 import { useNavigate } from "react-router-dom";
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 import { TiMediaPause, TiMediaPlay } from "react-icons/ti";
@@ -20,13 +16,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "@/app/components/ui/dropdown-menu";
 import Loading from "react-loading";
-import StoryHandler from "@/handlers/story-handlers";
 import DateUtils from "@/utils/date-utils";
 import toast from "react-hot-toast";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
+import StoryHandler from "@/handlers/story-handlers";
+import { useRef, useState } from "react";
+import { Skeleton } from "../ui/skeleton";
+import { IUserStory } from "@/types/story-types";
 
 const StoryCard = ({
   _id,
@@ -36,7 +35,7 @@ const StoryCard = ({
   prevStoryIndex,
 }: {
   _id: string;
-  user: UserType;
+  user: IUser;
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   currentStoryIndex: number;
   prevStoryIndex: number;
@@ -44,39 +43,28 @@ const StoryCard = ({
   const { data: currentUser } = useQuery<IUser, string>({
     queryKey: ["currentUser"],
   });
-  const [content, setContent] = useState<UserStoryType>();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [isLiking, setIsLiking] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { isLoading, data } = useQuery({
-    queryKey: [`story-${_id}`],
+  const { isLoading, data: content } = useQuery({
+    queryKey: [`story`, _id],
     queryFn: () => StoryHandler.getUserStoryById(_id),
   });
 
-  useEffect(() => {
-    if (data) {
-      setContent(data);
-    }
-  }, [data]);
-
-  const toggleStoryLike = async (toLike: boolean) => {
-    if (isLiking) return;
-    setIsLiking(true);
-    const toRun = toLike
-      ? StoryHandler.likeUserStoryById
-      : StoryHandler.unlikeUserStoryById;
-    toRun(_id)
-      .then((res) => {
-        setContent(res);
-      })
-      .catch(() => {
-        toast.error("Failed to like story");
-      })
-      .finally(() => {
-        setIsLiking(false);
-      });
-  };
-
+  const toggleStoryLike = useMutation({
+    mutationFn: (toLike: boolean) => {
+      const toRun = toLike
+        ? StoryHandler.likeUserStoryById
+        : StoryHandler.unlikeUserStoryById;
+      return toRun(_id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["story", _id] });
+    },
+    onError: () => {
+      toast.error("Failed to like story");
+    },
+  });
   if (isLoading) {
     return (
       <Skeleton className="bg-muted max-w-72 w-72 rounded-md flex items-center justify-center flex-col cursor-pointer aspect-[3/5] overflow-hidden p-4" />
@@ -124,7 +112,7 @@ const StoryCard = ({
               setIsDialogOpen={setIsDialogOpen}
             />
           )}
-          <StoryCardThreeDotsMenu content={content as UserStoryType} />
+          <StoryCardThreeDotsMenu content={content as IUserStory} />
           {content?.type === "text" && (
             <p
               className="text-lg font-semibold text-wrap overflow-hidden text-center break-words"
@@ -178,7 +166,7 @@ const StoryCard = ({
             </button>
           ) : (
             <>
-              {isLiking ? (
+              {toggleStoryLike.isPending ? (
                 <Loading
                   type="spin"
                   color="#000"
@@ -188,14 +176,14 @@ const StoryCard = ({
                 />
               ) : content?.likes.includes(currentUser?._id || "") ? (
                 <button
-                  onClick={() => toggleStoryLike(false)}
+                  onClick={() => toggleStoryLike.mutate(false)}
                   className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
                 >
                   <IoMdHeart className="text-3xl  text-muted-foreground text-red-500 transition-colors" />
                 </button>
               ) : (
                 <button
-                  onClick={() => toggleStoryLike(true)}
+                  onClick={() => toggleStoryLike.mutate(true)}
                   className="absolute bottom-4 right-4 w-8 h-8 object-cover object-center rounded-full group"
                 >
                   <IoMdHeartEmpty className="text-3xl text-primary group-hover:text-red-500 transition-colors" />
@@ -290,7 +278,7 @@ const VideoPlayerCard = ({ src }: { src: string }) => {
   );
 };
 
-const StoryCardThreeDotsMenu = ({ content }: { content: UserStoryType }) => {
+const StoryCardThreeDotsMenu = ({ content }: { content: IUserStory }) => {
   const { data: currentUser } = useQuery<IUser, string>({
     queryKey: ["currentUser"],
   });
@@ -348,8 +336,8 @@ const ViewersList = ({
   likes,
   setIsDialogOpen,
 }: {
-  viewers: UserStoryType["views"];
-  likes: UserStoryType["likes"];
+  viewers: string[];
+  likes: string[];
   setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (

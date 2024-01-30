@@ -8,8 +8,9 @@ import PostComponent from "@/app/components/post/post-component";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import PostHandler from "@/handlers/post-handlers";
 import { Button } from "@/app/components/ui/button";
+import StoriesList from "@/app/components/stories/stories-list";
 // import StoriesList from "@/app/components/stories/stories-list";
-
+//todo - not working
 const FeedPage = () => {
   const postRef = useRef<HTMLDivElement>(null);
   const [postsIds, setPostsIds] = useState<string[]>([]);
@@ -21,6 +22,7 @@ const FeedPage = () => {
     },
     initialPageParam: "", // Add this line
     retry: false,
+    staleTime: Infinity,
   });
 
   useEffect(() => {
@@ -52,7 +54,7 @@ const FeedPage = () => {
         className="flex flex-col gap-4 col-span-6 lg:col-span-5"
       >
         <div className={cn("flex gap-1 p-4 rounded-md", shadow.sm)}>
-          {/* <StoriesList /> */}
+          <StoriesList />
         </div>
         <CreatePostCard />
         {data?.pages.map((post) => (
