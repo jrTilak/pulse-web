@@ -16,9 +16,9 @@ const CreateNewStory = React.lazy(
 const CreateNewPost = React.lazy(
   () => import("@/app/pages/new/new-post/create-new-post")
 );
-// const SearchPage = React.lazy(
-//   () => import("@/app/pages/search/search-page")
-// );
+const SearchPage = React.lazy(
+  () => import("@/app/pages/search/search-page")
+);
 // const NotificationPage = React.lazy(
 //   () => import("@/app/pages/notifications/notification-page")
 // );
@@ -82,10 +82,10 @@ const ROUTES: RouteType[] = [
     path: "/new/post",
     Component: CreateNewPost,
   },
-  // {
-  //   path: "/search",
-  //   Component: SearchPage,
-  // },
+  {
+    path: "/search",
+    Component: SearchPage,
+  },
   // {
   //   path: "/notification",
   //   Component: NotificationPage,
