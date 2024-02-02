@@ -10,7 +10,7 @@ const postRouter = Router();
  */
 
 postRouter.get("/:username/all", PostController.getAllPosts);
-postRouter.get("/relevant", verifyToken, PostController.getRelevantPost);
+postRouter.get("/relevant", verifyToken, PostController.getRelevantPostsId);
 postRouter.get(
   "/:username/saved-posts",
   verifyToken,

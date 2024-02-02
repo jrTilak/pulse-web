@@ -19,9 +19,9 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.2",
+    "concurrently": "^8.2.2",
     "nodemon": "^3.0.2",
-    "typescript": "^5.3.3",
-    "concurrently": "^8.2.2"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -32,6 +32,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0",
+    "shuffle-array": "^1.0.1",
     "socket.io": "^4.7.2",
     "swagger-ui-express": "^5.0.0",
     "yamljs": "^0.3.0",

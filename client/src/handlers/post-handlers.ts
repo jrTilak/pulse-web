@@ -1,5 +1,5 @@
 import { fetchUrl } from "./handler";
-import { IPost, IPostComment, IPostContent } from "@/types/post-types";
+import { IPost, IPostContent } from "@/types/post-types";
 
 export default class PostHandler {
   public static createANewPost = (post: IPostContent): Promise<IPost> => {
@@ -61,8 +61,8 @@ export default class PostHandler {
     });
   };
 
-  public static getRelevantPost = (neglect: string[]): Promise<IPost> => {
-    return fetchUrl<IPost>(
+  public static getRelevantPostsId = (neglect: string[]): Promise<string[]> => {
+    return fetchUrl<string[]>(
       `/post/relevant?neglect=${neglect.join(",")}`,
       "GET"
     );

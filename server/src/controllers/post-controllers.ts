@@ -6,7 +6,7 @@ import UserPrivateInfo from "../schema/UserPrivateInfo";
 import ResponseController from "./reponse-controllers";
 import PostUtils from "../utils/post-utils";
 import mongoose from "mongoose";
-
+import shuffle from "shuffle-array";
 export class PostController {
   /**
    * Creates a new post.
@@ -290,24 +290,25 @@ export class PostController {
    * @param res - The response object.
    * @returns A Promise that resolves to the response containing the relevant posts.
    */
-  public static getRelevantPost = async (req: Request, res: Response) => {
+  public static getRelevantPostsId = async (req: Request, res: Response) => {
     const { neglect } = req.query;
     const toNeglect = neglect ? (neglect as string).split(",") : [];
 
     try {
-      const post = await Post.findOne({
+      const posts = await Post.find({
         _id: { $nin: toNeglect },
         createdBy: { $nin: res.locals.jwtData.id },
       });
-      if (!post) {
+      if (!posts) {
         return ResponseController.Handle404Error(res, []);
       }
-      console.log(post);
-      const user = await User.findOne({ _id: post?.createdBy });
       return ResponseController.HandleSuccessResponse(res, {
         status: 200,
         message: "Posts found!",
-        data: PostUtils.appendSingleUser(post.toJSON(), user.toJSON()),
+        data: shuffle(
+          posts.map((post) => post._id),
+          { copy: true }
+        ).filter((_, index: number) => index < 10),
       });
     } catch (error) {
       return ResponseController.Handle500Error(res, error);
