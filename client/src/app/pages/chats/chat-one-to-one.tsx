@@ -41,7 +41,7 @@ const ChatsOneToOne = () => {
     <div className={cn("flex flex-col justify-between w-full", height.max)}>
       {!isChattingWithLoading && <ChatHeader user={chattingWith as IUser} />}
       <ScrollArea id="chat-scroll-area" className="flex flex-grow p-4 w-full">
-        <motion.div className="flex flex-col gap-1">
+        <motion.div className="flex flex-col gap-1 w-full">
           {chats?.chats.length === 0 ? (
             <NoChatsFound user={chattingWith as IUser} />
           ) : (

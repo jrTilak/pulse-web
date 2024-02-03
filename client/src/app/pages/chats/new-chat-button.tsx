@@ -37,9 +37,16 @@ const NewChatButton = () => {
 
   useEffect(() => {
     if (currentUser?._id && users) {
-      setFilteredUsers(users.filter((user) => user._id !== currentUser._id));
+      setFilteredUsers( //todo: fix this - it's not working
+        users.filter(
+          (user) =>
+            user._id !== currentUser._id ||
+            user.username !== currentUser.username
+        )
+      );
+      console.log("filteredUsers");
     }
-  }, [currentUser?._id, users]);
+  }, [currentUser?._id, currentUser?.username, users]);
 
   useEffect(() => {
     if (query === "") {
