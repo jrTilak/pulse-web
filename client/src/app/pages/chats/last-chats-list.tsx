@@ -10,14 +10,17 @@ import Loading from "react-loading";
 import ChatUtils from "@/utils/chat-utils";
 import DateUtils from "@/utils/date-utils";
 import { ScrollArea } from "@/app/components/ui/scroll-area";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
-import { ILastChat } from "@/types/chat-types";
+import { IChat, ILastChat } from "@/types/chat-types";
 import ChatHandler from "@/handlers/chat-handlers";
+import useSocket from "@/app/providers/socket-provider";
+import UserHandler from "@/handlers/user-handlers";
 
 const LastChatsList = () => {
   const [isVisibile, setIsVisible] = useState(false);
-
+  const queryClient = useQueryClient();
+  const { socket } = useSocket();
   const { data: lastChats } = useQuery<ILastChat[]>({
     queryKey: ["lastChats"],
     queryFn: ChatHandler.handleGetLastChats,
@@ -39,6 +42,49 @@ const LastChatsList = () => {
       });
     }
   }, [lastChats]);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("receive-message", (chat: IChat) => {
+      const isNew = ChatUtils.isNewChat({
+        lastChats: lastChats || [],
+        message: chat,
+      });
+      if (!isNew.isNewChat) {
+        queryClient.setQueryData<ILastChat[]>(["lastChats"], (prev) => {
+          if (!prev) return [];
+          return prev.map((c, i) => {
+            if (i === isNew.index) {
+              return {
+                ...c,
+                lastChat: chat,
+                unseenMessagesCount: c.unseenMessagesCount + 1,
+              };
+            }
+            return c;
+          });
+        });
+      } else {
+        UserHandler.getUserById(chat.sentBy).then((user) => {
+          queryClient.setQueryData<ILastChat[]>(["lastChats"], (prev) => {
+            if (!prev) return [];
+            return [
+              {
+                _id: chat._id,
+                sentTo: user as IUser,
+                lastChat: chat,
+                unseenMessagesCount: 1,
+              },
+              ...prev,
+            ];
+          });
+        });
+      }
+    });
+    return () => {
+      socket.off("receive-message");
+    };
+  }, [lastChats, queryClient, socket]);
 
   return (
     <div
@@ -66,7 +112,7 @@ const LastChatsList = () => {
       </span>
       <ScrollArea id="last-chats-scroll-area" className="w-full">
         <div className="flex flex-col gap-4 mt-2">
-          {lastChats?.map((chat, i) => (
+          {ChatUtils.sortLastChats(lastChats || [])?.map((chat, i) => (
             <AvatarWithMessage chat={chat} key={i} />
           ))}
           {lastChats?.length === 0 && (

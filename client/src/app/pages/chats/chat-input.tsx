@@ -1,9 +1,8 @@
 import { TfiClip } from "react-icons/tfi";
 import { IoImageOutline } from "react-icons/io5";
 import { IoSend } from "react-icons/io5";
-import React, { useState } from "react";
+import { useState } from "react";
 import { RxCross2 } from "react-icons/rx";
-import { AnimatePresence, motion } from "framer-motion";
 import Loading from "react-loading";
 import { MdMicNone } from "react-icons/md";
 import {
@@ -16,12 +15,25 @@ import {
 import FileHandler from "@/handlers/file-handlers";
 import VoiceMessageInput from "./voice-message-input";
 import { IUser } from "@/types/user-types";
-import { IChat } from "@/types/chat-types";
+import { IAllChats, IChat, ILastChat } from "@/types/chat-types";
 import toast from "react-hot-toast";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
+import ChatValidator from "@/validators/chat-validators";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import useSocket from "@/app/providers/socket-provider";
+import { useParams } from "react-router-dom";
+import UserHandler from "@/handlers/user-handlers";
+import ChatUtils from "@/utils/chat-utils";
 
 const ChatInput = ({ chattingWith }: { chattingWith: IUser }) => {
+  const { data: lastChats } = useQuery<ILastChat[]>({
+    queryKey: ["lastChats"],
+  });
+  const { chatId } = useParams<{ chatId: string }>();
+  const queryClient = useQueryClient();
+  const { socket } = useSocket();
+  const { data: currentUser } = useQuery<IUser>({ queryKey: ["currentUser"] });
   const [chatTextVal, setChatTextVal] = useState("");
   const [isMessageSending, setIsMessageSending] = useState(false);
   const [isCaptionOpen, setIsCaptionOpen] = useState(false);
@@ -74,11 +86,137 @@ const ChatInput = ({ chattingWith }: { chattingWith: IUser }) => {
     },
   ];
 
+  const handleSendMessage = async ({
+    content,
+    _type,
+    caption,
+  }: {
+    content: string;
+    _type: string;
+    caption?: string;
+  }) => {
+    if (!content || isMessageSending) return false;
+    const data = ChatValidator.validateChat({
+      data: {
+        content: content.trim(),
+        _type: _type as "text" | "image" | "video" | "audio" | "file",
+        caption,
+      },
+      sentBy: currentUser?._id as string,
+      sentTo: chattingWith._id,
+      sentAt: new Date().toISOString(),
+      isSeen: false,
+      isDeleted: false,
+    });
+    if (!data.success) {
+      toast.error(
+        "Something went wrong! Please try again or refresh the page."
+      );
+      return false;
+    }
+
+    if (!socket) {
+      toast.error(
+        "Something went wrong! Please try again or refresh the page."
+      );
+      return false;
+    }
+    setIsMessageSending(true);
+    socket.emit("send-message", data.data, async (chat: IChat) => {
+      if (!chat) {
+        toast.error(
+          "Something went wrong! Please try again or refresh the page."
+        );
+        setIsMessageSending(false);
+        return false;
+      }
+      queryClient.setQueryData<IAllChats>(["chats", chatId], (prev) => {
+        const prevChats = prev?.chats || [];
+        return {
+          ...prev,
+          chats: [...prevChats, chat],
+        } as IAllChats;
+      });
+      const isNew = ChatUtils.isNewChat({
+        lastChats: lastChats || [],
+        message: chat,
+      });
+      if (!isNew.isNewChat) {
+        console.log("isNew", isNew);
+        queryClient.setQueryData<ILastChat[]>(["lastChats"], (prev) => {
+          if (!prev) return [];
+          return prev.map((c, i) => {
+            if (i === isNew.index) {
+              return {
+                ...c,
+                lastChat: chat,
+                unseenMessagesCount: c.unseenMessagesCount + 1,
+              };
+            }
+            return c;
+          });
+        });
+      } else {
+        UserHandler.getUserById(chat.sentBy).then((user) => {
+          queryClient.setQueryData<ILastChat[]>(["lastChats"], (prev) => {
+            if (!prev) return [];
+            return [
+              {
+                _id: chat._id,
+                sentTo: user as IUser,
+                lastChat: chat,
+                unseenMessagesCount: 1,
+              },
+              ...prev,
+            ];
+          });
+        });
+      }
+      setIsMessageSending(false);
+      setChatTextVal("");
+      return true;
+    });
+  };
+
+  const handleFileUploadToServer = async (
+    file: string | null,
+    fileName: string | null,
+    caption?: string
+  ) => {
+    if (!file) return;
+    FileHandler.uploadFile(file, fileName || "")
+      .then(async (data) => {
+        await handleSendMessage({
+          content: data._id,
+          _type: (() => {
+            if (file?.startsWith("data:image")) return "image";
+            if (file?.startsWith("data:video")) return "video";
+            if (file?.startsWith("data:audio")) return "audio";
+            return "file";
+          })(),
+          caption,
+        });
+        setFileData(null);
+        setFileName(null);
+        setIsCaptionOpen(false);
+        setCaption("");
+      })
+      .catch(() => {
+        toast.error("Failed to upload file! Please try again.");
+      });
+  };
+
   return (
     <form
-      className="border-t border-muted"
+      className="border-t border-muted mt-2"
       onSubmit={async (e) => {
         e.preventDefault();
+        if (!chatTextVal) return;
+        await handleSendMessage({
+          content: chatTextVal,
+          _type: "text",
+          caption: undefined,
+        });
       }}
     >
       <label htmlFor="chat" className="sr-only">
@@ -153,15 +291,15 @@ const ChatInput = ({ chattingWith }: { chattingWith: IUser }) => {
               )}
               <div className="flex gap-4 ">
                 <Input
-                  //   onSubmit={(e) => {
-                  //     e.preventDefault();
-                  //     setIsCaptionOpen(false);
-                  //     handleFileUploadToServer(
-                  //       fileData,
-                  //       fileName,
-                  //       caption || undefined
-                  //     );
-                  //   }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setIsCaptionOpen(false);
+                    handleFileUploadToServer(
+                      fileData,
+                      fileName,
+                      caption || undefined
+                    );
+                  }}
                   autoFocus
                   className="flex-grow"
                   placeholder="Write something.."
@@ -170,14 +308,14 @@ const ChatInput = ({ chattingWith }: { chattingWith: IUser }) => {
                 />
                 <Button
                   variant="secondary"
-                  //   onClick={() => {
-                  //     setIsCaptionOpen(false);
-                  //     handleFileUploadToServer(
-                  //       fileData,
-                  //       fileName,
-                  //       caption || undefined
-                  //     );
-                  //   }}
+                  onClick={() => {
+                    setIsCaptionOpen(false);
+                    handleFileUploadToServer(
+                      fileData,
+                      fileName,
+                      caption || undefined
+                    );
+                  }}
                 >
                   Send
                 </Button>
@@ -189,7 +327,7 @@ const ChatInput = ({ chattingWith }: { chattingWith: IUser }) => {
       <VoiceMessageInput
         isOpen={isVoiceMessageInputOpen}
         setIsOpen={setIsVoiceMessageInputOpen}
-        // handleSendMessage={handleFileUploadToServer}
+        handleSendMessage={handleFileUploadToServer}
       />
     </form>
   );

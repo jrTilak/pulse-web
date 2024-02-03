@@ -7,28 +7,70 @@ import AudioPlayer from "@/app/components/post/audio-player";
 import VideoPlayer from "@/app/components/post/video-player";
 import { Button } from "@/app/components/ui/button";
 import { MdOutlineFileDownload } from "react-icons/md";
-import { IChat } from "@/types/chat-types";
-import { useQuery } from "@tanstack/react-query";
+import { IChat, ILastChat } from "@/types/chat-types";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
 import { IFile } from "@/types/file-types";
+import { useInView } from "react-intersection-observer";
 import toast from "react-hot-toast";
+import useSocket from "@/app/providers/socket-provider";
 type MessageCompProps = {
   chat: IChat;
 };
 
 const MessageComp = ({ chat }: MessageCompProps) => {
+  const queryClient = useQueryClient();
+  const { socket } = useSocket();
   const { data: currentUser } = useQuery<IUser>({
     queryKey: ["currentUser"],
   });
-
+  const [ref, inView] = useInView({
+    threshold: 0.01,
+  });
   const isSent = chat.sentBy === currentUser?._id;
+
+  useEffect(() => {
+    if (inView && !chat.isSeen && !isSent) {
+      // mark as seen
+      socket &&
+        socket.emit(
+          "mark-as-seen",
+          {
+            sentBy: chat.sentTo,
+            sentTo: chat.sentBy, //this is opposite because we are marking as seen for the other user
+            messageId: chat._id,
+          },
+          (res: unknown) => {
+            if (!res) return;
+            queryClient.setQueryData<ILastChat[]>(["lastChats"], (prev) => {
+              return prev?.map((c) => {
+                if (c._id === chat._id) {
+                  return { ...c, isSeen: true };
+                }
+                return c;
+              });
+            });
+          }
+        );
+    }
+  }, [
+    chat._id,
+    chat.isSeen,
+    chat.sentBy,
+    chat.sentTo,
+    inView,
+    isSent,
+    queryClient,
+    socket,
+  ]);
 
   return (
     <motion.div
+      ref={ref}
       key={chat._id}
       initial={{ opacity: 0, x: isSent ? 20 : -20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3, delay: Math.random() / 3 }}
+      transition={{ duration: 0.3, delay: Math.random() / 5 }}
       className={cn(
         "flex flex-col gap-1 w-full max-w-[320px] group relative",
         chat.repliedTo ? "border-l-4 border-purple-500" : ""
