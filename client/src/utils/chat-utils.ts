@@ -30,8 +30,6 @@ export default class ChatUtils {
   ) => {
     const ids = chatId.split("_");
     const otherUserId = ids.find((id) => id !== currentUserId);
-    const currentUserIdFromChatId = ids.find((id) => id === currentUserId);
-    if (currentUserIdFromChatId !== currentUserId || !otherUserId) return null;
     return { currentUserId, otherUserId };
   };
 }

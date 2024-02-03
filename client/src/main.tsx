@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
       <App />
-      {import.meta.env.DEV && <ReactQueryDevtools buttonPosition="top-right" />}
+      {import.meta.env.DEV && <ReactQueryDevtools buttonPosition="top-left" />}
     </QueryClientProvider>
     <Toaster />
   </BrowserRouter>

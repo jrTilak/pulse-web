@@ -22,15 +22,15 @@ const SearchPage = React.lazy(
 // const NotificationPage = React.lazy(
 //   () => import("@/app/pages/notifications/notification-page")
 // );
-// const OpenAChat = React.lazy(
-//   () => import("@/app/pages/chats/open-a-chat")
-// );
-// const ChatsOneToOne = React.lazy(
-//   () => import("@/app/pages/chats/chat-one-to-one")
-// );
-// const ChatPageLayout = React.lazy(
-//   () => import("@/components/layouts/chat-page-layout")
-// );
+const OpenAChat = React.lazy(
+  () => import("@/app/pages/chats/open-a-chat")
+);
+const ChatsOneToOne = React.lazy(
+  () => import("@/app/pages/chats/chat-one-to-one")
+);
+const ChatPageLayout = React.lazy(
+  () => import("@/app/layouts/chat-page-layout")
+);
 const Error404Page = React.lazy(() => import("@/app/pages/error/404"));
 
 interface RouteType {
@@ -90,16 +90,16 @@ const ROUTES: RouteType[] = [
   //   path: "/notification",
   //   Component: NotificationPage,
   // },
-  // {
-  //   path: "/chats",
-  //   Component: OpenAChat,
-  //   Layout: ChatPageLayout,
-  // },
-  // {
-  //   path: "/chats/:chatId",
-  //   Component: ChatsOneToOne,
-  //   Layout: ChatPageLayout,
-  // },
+  {
+    path: "/chats",
+    Component: OpenAChat,
+    Layout: ChatPageLayout,
+  },
+  {
+    path: "/chats/:chatId",
+    Component: ChatsOneToOne,
+    Layout: ChatPageLayout,
+  },
   {
     path: "*",
     Component: Error404Page,
