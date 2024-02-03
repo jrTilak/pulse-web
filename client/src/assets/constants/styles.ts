@@ -17,4 +17,5 @@ export const gradient = {
 
 export const height = {
   max: "h-[calc(100vh-56px-48px)] md:h-screen",
+  chat: "h-[calc(100vh-56px-48px-1rem)]",
 };

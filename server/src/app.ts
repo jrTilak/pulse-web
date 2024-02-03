@@ -7,6 +7,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { Server as IoServer } from "socket.io";
 import { Server } from "http";
+import { handleSocketConnection } from "./controllers/socket-controllers.js";
 
 config();
 
@@ -34,6 +35,8 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-app.use("/api/v1", appRouter);
+app.use("/api/v1", appRouter); // routes
+const namespace = io.of("/ws/v1");
+handleSocketConnection(namespace); // socket.io
 
 export { app, httpServer, io };

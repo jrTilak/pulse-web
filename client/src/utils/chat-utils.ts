@@ -1,3 +1,4 @@
+import { ILastChat, IChat } from "@/types/chat-types";
 /**
  * Utility class for chat-related operations.
  */
@@ -30,8 +31,48 @@ export default class ChatUtils {
   ) => {
     const ids = chatId.split("_");
     const otherUserId = ids.find((id) => id !== currentUserId);
-    const currentUserIdFromChatId = ids.find((id) => id === currentUserId);
-    if (currentUserIdFromChatId !== currentUserId || !otherUserId) return null;
     return { currentUserId, otherUserId };
+  };
+  /**
+   * Sorts an array of last chats in descending order based on the sentAt property.
+   * @param chats - The array of last chats to be sorted.
+   * @returns The sorted array of last chats.
+   */
+  public static sortLastChats = (chats: ILastChat[]) => {
+    try {
+      return chats.sort((a, b) => {
+        return (
+          new Date(b.lastChat.sentAt).getTime() -
+          new Date(a.lastChat.sentAt).getTime()
+        );
+      });
+    } catch (e) {
+      return [];
+    }
+  };
+  public static isNewChat = ({
+    lastChats,
+    message,
+  }: {
+    lastChats: ILastChat[];
+    message: IChat;
+  }): {
+    isNewChat: boolean;
+    index: number;
+  } => {
+    const isChatExist = lastChats.filter(
+      (chat) =>
+        chat.sentTo._id === message.sentBy &&
+        chat.lastChat.sentBy === message.sentBy
+    );
+    const index = lastChats.findIndex(
+      (chat) =>
+        chat.sentTo._id === message.sentBy &&
+        chat.lastChat.sentBy === message.sentBy
+    );
+    return {
+      isNewChat: !isChatExist,
+      index,
+    };
   };
 }
