@@ -22,7 +22,7 @@ import { Input } from "@/app/components/ui/input";
 import ChatValidator from "@/validators/chat-validators";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useSocket from "@/app/providers/socket-provider";
-import { useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import UserHandler from "@/handlers/user-handlers";
 import ChatUtils from "@/utils/chat-utils";
 
@@ -30,6 +30,7 @@ const ChatInput = ({ chattingWith }: { chattingWith: IUser }) => {
   const { data: lastChats } = useQuery<ILastChat[]>({
     queryKey: ["lastChats"],
   });
+  
   const { chatId } = useParams<{ chatId: string }>();
   const queryClient = useQueryClient();
   const { socket } = useSocket();
@@ -150,7 +151,6 @@ const ChatInput = ({ chattingWith }: { chattingWith: IUser }) => {
               return {
                 ...c,
                 lastChat: chat,
-                unseenMessagesCount: c.unseenMessagesCount + 1,
               };
             }
             return c;

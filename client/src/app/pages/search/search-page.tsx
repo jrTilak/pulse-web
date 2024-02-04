@@ -26,14 +26,8 @@ const SearchPage = () => {
     isError,
   } = useQuery({
     queryKey: ["searchUsers"],
-    queryFn: UserHandler.getAllUsers,
+    queryFn: () => UserHandler.getAllUsers([currentUser?._id || ""]),
   });
-
-  useEffect(() => {
-    if (currentUser?._id && users) {
-      setFilteredUsers(users.filter((user) => user._id !== currentUser._id));
-    }
-  }, [currentUser?._id, users]);
 
   useEffect(() => {
     if (query === "") {
@@ -96,7 +90,6 @@ export default SearchPage;
 
 const SearchUserAvatar = ({ user, q }: { user: IUser; q: string }) => {
   const splitName = user.name.toLowerCase().split(q.toLowerCase());
-  console.log(splitName);
   return (
     <AnimatePresence>
       <motion.div
