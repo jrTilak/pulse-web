@@ -8,7 +8,7 @@ import MessageWithContextMenu from "./message-with-context-menu";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ChatHandler from "@/handlers/chat-handlers";
 import LoadingPage from "../shared/loading-page";
-import { IAllChats, IChat } from "@/types/chat-types";
+import { IAllChats } from "@/types/chat-types";
 import UserHandler from "@/handlers/user-handlers";
 import ChatUtils from "@/utils/chat-utils";
 import { IUser } from "@/types/user-types";
