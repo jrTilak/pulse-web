@@ -9,6 +9,7 @@ import { RiExternalLinkFill } from "react-icons/ri";
 import { FcReddit } from "react-icons/fc";
 import { IUser } from "@/types/user-types";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const supportedSocialLinks: Record<string, IconType> = {
   facebook: FaFacebook,
   instagram: AiFillInstagram,

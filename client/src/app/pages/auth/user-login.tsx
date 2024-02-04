@@ -42,8 +42,7 @@ const UserLogin = () => {
 
   const onSubmit: SubmitHandler<LoginCredentialsType> = async (data) => {
     UserAuthHandler.loginUser(data)
-      .then((res) => {
-        setCurrentUser(res);
+      .then(() => {
         navigate(redirect || "/feed");
       })
       .catch((err) => {

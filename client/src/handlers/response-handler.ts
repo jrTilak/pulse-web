@@ -1,14 +1,16 @@
 import { AxiosResponse } from "axios";
 
 export default class ResponseHandler {
-  public static HandleSuccessResponse(res: AxiosResponse<any>) {
-    return new Promise<any>((resolve) => {
-      resolve(res.data.data);
+  public static HandleSuccessResponse(res: AxiosResponse<unknown>) {
+    return new Promise<unknown>((resolve) => {
+      const data = res as { data: { data: unknown } };
+      resolve(data.data.data);
     });
   }
-  public static HandleErrorResponse(err: any) {
+  public static HandleErrorResponse(err: unknown) {
     return new Promise<string>((_, reject) => {
-      reject(err?.response?.data?.message || "Something went wrong");
+      const res = err as { response: { data: { message: string } } };
+      reject(res?.response?.data?.message || "Something went wrong");
     });
   }
 }

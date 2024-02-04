@@ -2,9 +2,10 @@ import { shadow } from "@/assets/constants/styles";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { IconType } from "react-icons";
 interface SimpleTextIconCardProps {
   text: string;
-  Icon: any;
+  Icon: IconType;
   href?: string;
   action?: () => void;
   className?: string;

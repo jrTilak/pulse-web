@@ -36,7 +36,7 @@ const ImagesLayoutButtons = ({
             setContents((prev) => ({
               ...prev,
               imagesLayout: button.layout,
-            }))
+            }) as IPostContent)
           }
           className={cn(
             "p-2 rounded-full hover:bg-gray-200",

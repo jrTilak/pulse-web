@@ -27,7 +27,7 @@ const CreateNewPost = () => {
   const { data: currentUser } = useQuery<IUser, string>({
     queryKey: ["currentUser"],
   });
-  const [contents, setContents] = useState<IPostContent>();
+  const [contents, setContents] = useState({} as IPostContent);
   const [isPostUploading, setIsPostUploading] = useState(false);
   const [isDraftUploading, setIsDraftUploading] = useState(false);
   const textInputRef = useRef<HTMLTextAreaElement>(null);
@@ -46,7 +46,7 @@ const CreateNewPost = () => {
       ? PostHandler.createADraft
       : PostHandler.createANewPost;
 
-    toRun(data.data as any)
+    toRun(data.data as unknown as IPostContent)
       .then(() => {
         toast.success(`${isDraft ? "Draft" : "Post"} created successfully.`);
         navigate(`/u/${currentUser?.username}`);
@@ -61,9 +61,9 @@ const CreateNewPost = () => {
 
   useEffect(() => {
     if (contents?.images && contents?.images.length < 3) {
-      setContents((prev) => ({ ...prev, imagesLayout: "vertical" } as any));
+      setContents((prev) => ({ ...prev, imagesLayout: "vertical" } as IPostContent));
     }
-  }, [contents?.images?.length]);
+  }, [contents?.images, contents?.images.length]);
 
   const handleImageVideoUpload = () => {
     if (
@@ -114,7 +114,7 @@ const CreateNewPost = () => {
             ({
               ...prev,
               images: [...(prev?.images || []), base64Data],
-            } as any)
+            } as IPostContent)
         );
       };
       reader.readAsDataURL(file);
@@ -140,7 +140,7 @@ const CreateNewPost = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64Data = reader.result as string;
-        setContents((prev) => ({ ...prev, video: base64Data } as any));
+        setContents((prev) => ({ ...prev, video: base64Data } as IPostContent));
       };
       reader.readAsDataURL(file);
     }
@@ -165,7 +165,7 @@ const CreateNewPost = () => {
           const reader = new FileReader();
           reader.onloadend = () => {
             const base64Data = reader.result as string;
-            setContents((prev) => ({ ...prev, audio: base64Data } as any));
+            setContents((prev) => ({ ...prev, audio: base64Data } as IPostContent));
           };
           reader.readAsDataURL(file);
         } else {
@@ -225,12 +225,12 @@ const CreateNewPost = () => {
                   <ImagesLayoutButtons
                     images={contents.images}
                     layout={contents.imagesLayout}
-                    setContents={setContents as any}
+                    setContents={setContents}
                   />
                   <ImagesPost
                     images={contents.images}
                     key="editing"
-                    setContents={setContents as any}
+                    setContents={setContents}
                     layout={contents.imagesLayout}
                   />
                 </>
@@ -238,13 +238,13 @@ const CreateNewPost = () => {
               {contents?.video && (
                 <VideoPlayer
                   video={contents.video}
-                  setContents={setContents as any}
+                  setContents={setContents}
                 />
               )}
               {contents?.audio && (
                 <AudioPlayer
                   audio={contents.audio}
-                  setContents={setContents as any}
+                  setContents={setContents}
                 />
               )}
               <div className="flex justify-start gap-2 mt-2">
@@ -277,7 +277,7 @@ const CreateNewPost = () => {
           </CardContent>
         </Card>
         <div className="flex justify-between">
-          <CancelCreatePost setContents={setContents as any} />
+          <CancelCreatePost setContents={setContents} />
           <div className="flex space-x-2">
             <Button
               className=""

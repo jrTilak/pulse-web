@@ -12,11 +12,11 @@ import axios, { Method } from "axios";
 export async function fetchUrl<T>(
   url: string,
   method: Method,
-  data?: any,
-  headers: any = {
-    "Content-Type": "application/json",
-  }
+  data?: object
 ): Promise<T> {
+  const headers = {
+    "Content-Type": "application/json",
+  };
   try {
     const response = await axios({
       url: `${import.meta.env.VITE_BACKEND_URL}${url}`,
@@ -28,9 +28,10 @@ export async function fetchUrl<T>(
     return new Promise<T>((resolve) => {
       resolve(response.data.data);
     });
-  } catch (error: any) {
+  } catch (error) {
     return new Promise<T>((_, reject) => {
-      reject(error?.response?.data?.message || "Something went wrong");
+      const res = error as { response: { data: { message: string } } };
+      reject(res?.response?.data?.message || "Something went wrong");
     });
   }
 }

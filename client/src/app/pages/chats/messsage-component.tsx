@@ -7,7 +7,7 @@ import AudioPlayer from "@/app/components/post/audio-player";
 import VideoPlayer from "@/app/components/post/video-player";
 import { Button } from "@/app/components/ui/button";
 import { MdOutlineFileDownload } from "react-icons/md";
-import { IAllChats, IChat, ILastChat } from "@/types/chat-types";
+import { IChat, ILastChat } from "@/types/chat-types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
 import { IFile } from "@/types/file-types";
@@ -15,13 +15,11 @@ import { useInView } from "react-intersection-observer";
 import toast from "react-hot-toast";
 import useSocket from "@/app/providers/socket-provider";
 import ChatUtils from "@/utils/chat-utils";
-import { useParams } from "react-router-dom";
 type MessageCompProps = {
   chat: IChat;
 };
 
 const MessageComp = ({ chat }: MessageCompProps) => {
-  const { chatId } = useParams<{ chatId: string }>();
   const queryClient = useQueryClient();
   const { socket } = useSocket();
   const { data: currentUser } = useQuery<IUser>({
@@ -66,7 +64,6 @@ const MessageComp = ({ chat }: MessageCompProps) => {
           }
         );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     chat._id,
     chat.isSeen,
