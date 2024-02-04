@@ -8,9 +8,17 @@ import { io } from "socket.io-client";
 import { useQuery } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
 import useSocket from "../providers/socket-provider";
+import Peer from "peerjs";
+import usePeer from "../providers/peer-provider";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const { setSocket } = useSocket();
+  const {
+    setPeerCall,
+    setIsCallIncoming,
+    setCallingWithId,
+    setRemoteUserStream,
+  } = usePeer();
   const { data: currentUser } = useQuery<IUser>({
     queryKey: ["currentUser"],
   });
@@ -34,6 +42,24 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       socket.disconnect();
     };
   }, [currentUser?._id, setSocket]);
+
+  useEffect(() => {
+    const peer = new Peer(`pulse_${currentUser?._id}` as string);
+    peer.on("open", (id) => {
+      console.log("peerjs id", id);
+    });
+
+    peer.on("call", (call) => {
+      console.log("call received", call);
+    });
+  }, [
+    currentUser?._id,
+    currentUser?.username,
+    setCallingWithId,
+    setIsCallIncoming,
+    setPeerCall,
+    setRemoteUserStream,
+  ]);
 
   return (
     <div className="min-h-screen flex md:flex-row flex-col-reverse">

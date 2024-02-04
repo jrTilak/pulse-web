@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import DateUtils from "@/utils/date-utils";
 import { IUser } from "@/types/user-types";
 import { useState } from "react";
+import VideoCall from "@/app/components/call/video-call";
 
 export const ChatHeader = ({ user }: { user: IUser }) => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false);
@@ -53,11 +54,11 @@ export const ChatHeader = ({ user }: { user: IUser }) => {
           </div>
         </div>
       </div>
-      {/* <VideoCall
+      <VideoCall
         isOpen={isVideoCallOpen}
         setIsOpen={setIsVideoCallOpen}
         chattingWith={user}
-      /> */}
+      />
     </>
   );
 };
