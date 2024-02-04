@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import UserAvatar from "../avatars/user-avatar";
 import UserHandler from "@/handlers/user-handlers";
 import { useQuery } from "@tanstack/react-query";
@@ -15,7 +14,7 @@ const GetUser = ({ _id }: { _id: string }) => {
     <div className="flex flex-col gap-1 w-20 justify-center items-center">
       {<UserAvatar user={user as IUser} className="h-12 w-12" />}
       <span className="w-full overflow-hidden text-ellipsis text-xs text-center">
-        @{user?.username}
+        @{user?.username || "unknown"}
       </span>
     </div>
   );

@@ -38,8 +38,8 @@ export default class UserHandler {
     return fetchUrl<Partial<IUser>>(`/user/id/${userId}?q=${qs}`, "GET");
   };
 
-  public static getAllUsers = (): Promise<IUser[]> => {
-    return fetchUrl<IUser[]>("/user/all", "GET");
+  public static getAllUsers = (neglectUsers: string[]): Promise<IUser[]> => {
+    return fetchUrl<IUser[]>(`/user/all?neglectUsers=${neglectUsers.join(",")}`, "GET");
   };
 
   public static getSuggestedUsers = (): Promise<IUser[]> => {

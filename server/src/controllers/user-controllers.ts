@@ -256,13 +256,22 @@ export default class UserController {
    */
   public static getAllUsers = async (req: Request, res: Response) => {
     try {
-      const users = await User.find({});
+      const { neglectUsers: q } = req.query;
+      console.log(q);
+      const neglectUsers = String(q || "").split(",");
+      const users = await User.find({
+        _id: {
+          $nin: neglectUsers.map((id) => new mongoose.Types.ObjectId(id)),
+        },
+      });
+      console.log(users.map((user) => user.username));
       return ResponseController.HandleSuccessResponse(res, {
         status: 200,
         message: "Users found",
         data: users,
       });
     } catch (error) {
+      console.log(error);
       return ResponseController.Handle500Error(res, error);
     }
   };

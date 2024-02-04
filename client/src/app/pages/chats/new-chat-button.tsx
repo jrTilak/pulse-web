@@ -32,21 +32,8 @@ const NewChatButton = () => {
     isError,
   } = useQuery({
     queryKey: ["searchUsers"],
-    queryFn: UserHandler.getAllUsers,
+    queryFn: () => UserHandler.getAllUsers([currentUser?._id || ""]),
   });
-
-  useEffect(() => {
-    if (currentUser?._id && users) {
-      setFilteredUsers( //todo: fix this - it's not working
-        users.filter(
-          (user) =>
-            user._id !== currentUser._id ||
-            user.username !== currentUser.username
-        )
-      );
-      console.log("filteredUsers");
-    }
-  }, [currentUser?._id, currentUser?.username, users]);
 
   useEffect(() => {
     if (query === "") {
@@ -54,7 +41,9 @@ const NewChatButton = () => {
       return;
     }
     const filteredUsers = users?.filter((user) =>
-      user.name.toLowerCase().includes(query.toLowerCase())
+      user.username
+        .toLowerCase()
+        .includes(query.toLowerCase().split(" ").join("_"))
     );
     setFilteredUsers(filteredUsers || []);
   }, [query, users]);
@@ -63,7 +52,7 @@ const NewChatButton = () => {
   if (isError) return <p>Error...</p>;
 
   return (
-    <Dialog open={isOpened}>
+    <Dialog open={isOpened} onOpenChange={() => setQuery("")}>
       <DialogTrigger onClick={() => setIsOpened(true)}>
         <Button variant="secondary">
           <TbMessageCirclePlus className="w-6 h-6 text-muted-foreground hover:text-foreground transition-colors" />
@@ -97,7 +86,7 @@ const NewChatButton = () => {
                     id="default-search"
                     autoComplete="off"
                     className="block w-full py-2 text-sm bg-gray-200 rounded-md outline-none text-muted-foreground p-x-4 ps-10"
-                    placeholder="Search users"
+                    placeholder="Search by username"
                     required
                   />
                 </div>
@@ -105,29 +94,13 @@ const NewChatButton = () => {
             </DialogDescription>
             <div className="flex flex-col">
               {filteredUsers.map((user) => (
-                <Link
-                  onClick={() => setIsOpened(false)}
-                  to={`/chats/${ChatUtils.createChatId(
-                    user._id,
-                    currentUser?._id || ""
-                  )}`}
-                  key={user._id}
-                  className="flex items-center gap-2 hover:bg-muted px-4 py-2 cursor-pointer rounded-md transition-colors"
-                >
-                  <img
-                    className="w-10 h-10 rounded-full object-cover object-center"
-                    src={user.profileImg || AVATAR_PLACEHOLDER}
-                    alt=""
-                  />
-                  <div className="flex flex-col">
-                    <h5 className="mb-1 text-base truncate text-muted-foreground">
-                      {user.name}
-                    </h5>
-                    <p className="mb-0 text-xs truncate text-muted-foreground">
-                      @{user.username}
-                    </p>
-                  </div>
-                </Link>
+                <Avatar
+                  currentUser={currentUser as IUser}
+                  setIsOpened={setIsOpened}
+                  user={user}
+                  key={user?._id}
+                  q={query}
+                />
               ))}
             </div>
           </div>
@@ -137,3 +110,49 @@ const NewChatButton = () => {
   );
 };
 export default NewChatButton;
+
+const Avatar = ({
+  user,
+  currentUser,
+  setIsOpened,
+  q,
+}: {
+  user: IUser;
+  currentUser: IUser;
+  setIsOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  q: string;
+}) => {
+  const splitUserName = user.username
+    .toLowerCase()
+    .split(q.toLowerCase().split(" ").join("_"));
+
+  return (
+    <Link
+      onClick={() => setIsOpened(false)}
+      to={`/chats/${ChatUtils.createChatId(user._id, currentUser?._id || "")}`}
+      key={user._id}
+      className="flex items-center gap-2 hover:bg-muted px-4 py-2 cursor-pointer rounded-md transition-colors"
+    >
+      <img
+        className="w-10 h-10 rounded-full object-cover object-center"
+        src={user.profileImg || AVATAR_PLACEHOLDER}
+        alt=""
+      />
+      <div className="flex flex-col">
+        <h5 className="mb-1 text-base truncate text-muted-foreground">
+          {user.name}
+        </h5>
+        <p className="mb-0 text-xs truncate text-muted-foreground">
+          {splitUserName.map((part, index) => (
+            <span key={index}>
+              {part}
+              {index !== splitUserName.length - 1 && (
+                <span className="bg-primary text-primary-foreground">{q}</span>
+              )}
+            </span>
+          ))}
+        </p>
+      </div>
+    </Link>
+  );
+};
