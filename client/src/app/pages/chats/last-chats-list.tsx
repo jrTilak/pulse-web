@@ -2,7 +2,7 @@ import StoriesList from "@/app/components/stories/stories-list";
 import SearchBar from "./search-bar";
 import UserAvatar from "@/app/components/avatars/user-avatar";
 import { cn } from "@/lib/utils";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import NewChatButton from "./new-chat-button";
 import { useEffect, useState } from "react";
 import { height } from "@/assets/constants/styles";
@@ -12,7 +12,7 @@ import DateUtils from "@/utils/date-utils";
 import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
-import { IChat, ILastChat } from "@/types/chat-types";
+import { IAllChats, IChat, ILastChat } from "@/types/chat-types";
 import ChatHandler from "@/handlers/chat-handlers";
 import useSocket from "@/app/providers/socket-provider";
 import UserHandler from "@/handlers/user-handlers";
@@ -24,6 +24,20 @@ const LastChatsList = () => {
   const { data: lastChats } = useQuery<ILastChat[]>({
     queryKey: ["lastChats"],
     queryFn: ChatHandler.handleGetLastChats,
+  });
+  const { chatId } = useParams<{ chatId: string }>();
+
+  const { data: currentUser } = useQuery<IUser>({ queryKey: ["currentUser"] });
+
+  const { data: chattingWith, } = useQuery({
+    queryKey: ["chattingWith", chatId],
+    queryFn: () => {
+      const users = ChatUtils.getUserIdsFromChatId(
+        chatId as string,
+        currentUser?._id as string
+      );
+      return UserHandler.getUserById(users?.otherUserId as string);
+    },
   });
 
   const { pathname } = useLocation();
@@ -64,6 +78,20 @@ const LastChatsList = () => {
             return c;
           });
         });
+        if (
+          pathname.length > 10 &&
+          chat.sentBy === chattingWith?._id &&
+          chat.sentTo === currentUser?._id
+        ) {
+          console.log("received message to set", chat);
+          queryClient.setQueryData<IAllChats>(["chats", chatId], (prev) => {
+            const prevChats = prev?.chats || [];
+            return {
+              ...prev,
+              chats: [...prevChats, chat],
+            } as IAllChats;
+          });
+        }
       } else {
         UserHandler.getUserById(chat.sentBy).then((user) => {
           queryClient.setQueryData<ILastChat[]>(["lastChats"], (prev) => {
@@ -84,7 +112,15 @@ const LastChatsList = () => {
     return () => {
       socket.off("receive-message");
     };
-  }, [lastChats, queryClient, socket]);
+  }, [
+    chatId,
+    chattingWith?._id,
+    currentUser?._id,
+    lastChats,
+    pathname.length,
+    queryClient,
+    socket,
+  ]);
 
   return (
     <div

@@ -60,18 +60,18 @@ export default class ChatUtils {
     isNewChat: boolean;
     index: number;
   } => {
-    const isChatExist = lastChats.filter(
-      (chat) =>
-        chat.sentTo._id === message.sentBy &&
-        chat.lastChat.sentBy === message.sentBy
+    const chatIdFromMessage = ChatUtils.createChatId(
+      message.sentBy,
+      message.sentTo
     );
-    const index = lastChats.findIndex(
-      (chat) =>
-        chat.sentTo._id === message.sentBy &&
-        chat.lastChat.sentBy === message.sentBy
-    );
+    const index = lastChats.findIndex((lChat) => {
+      return (
+        chatIdFromMessage ===
+        ChatUtils.createChatId(lChat.lastChat.sentBy, lChat.lastChat.sentTo)
+      );
+    });
     return {
-      isNewChat: !isChatExist,
+      isNewChat: index === -1 ? true : false,
       index,
     };
   };

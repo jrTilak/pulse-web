@@ -45,37 +45,31 @@ const ChatsOneToOne = () => {
 
   useEffect(() => {
     if (!socket || !chattingWith || !currentUser) return;
-    socket.on("receive-message", (chat: IChat) => {
-      if (
-        chat.sentBy === chattingWith?._id &&
-        chat.sentTo === currentUser?._id
-      ) {
-        queryClient.setQueryData<IAllChats>(["chats", chatId], (prev) => {
-          const prevChats = prev?.chats || [];
-          return {
-            ...prev,
-            chats: [...prevChats, chat],
-          } as IAllChats;
-        });
+    socket.on(
+      "message-seen",
+      (data: {
+        sentBy: string;
+        sentTo: string;
+        messageId: string;
+        seenAt: string;
+      }) => {
+        console.log("seen", data);
+        if (chatId === ChatUtils.createChatId(data?.sentBy, data.sentTo)) {
+          queryClient.setQueryData<IAllChats>(["chats", chatId], (prev) => {
+            const prevChats = prev?.chats || [];
+            return {
+              ...prev,
+              chats: prevChats.map((chat) => {
+                if (chat._id === data.messageId) {
+                  return { ...chat, isSeen: true, seenAt: data.seenAt };
+                }
+                return chat;
+              }),
+            } as IAllChats;
+          });
+        }
       }
-    });
-
-    socket.on("message-seen", (data: IChat) => {
-      if (chatId === ChatUtils.createChatId(data?.sentBy, data.sentTo)) {
-        queryClient.setQueryData<IAllChats>(["chats", chatId], (prev) => {
-          const prevChats = prev?.chats || [];
-          return {
-            ...prev,
-            chats: prevChats.map((chat) => {
-              if (chat.sentAt === data.sentAt) {
-                return { ...chat, isSeen: true };
-              }
-              return chat;
-            }),
-          } as IAllChats;
-        });
-      }
-    });
+    );
     return () => {
       socket.off("receive-message");
       socket.off("message-seen");

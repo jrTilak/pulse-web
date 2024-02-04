@@ -2,7 +2,7 @@ import { IUser } from "./user-types";
 
 export interface ILastChat {
   _id: string;
-  sentTo: IUser;
+  sentTo: IUser; //the user another user is chatting with (the other user)
   lastChat: IChat;
   unseenMessagesCount: number;
 }
@@ -19,7 +19,7 @@ export interface IChat {
   data: {
     content: string;
     _type: string;
-    caption: string;
+    caption?: string;
   };
 }
 

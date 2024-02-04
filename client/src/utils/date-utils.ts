@@ -27,7 +27,8 @@ export default class DateUtils {
     } else if (minutes > 0) {
       return `${minutes} min`;
     } else {
-      return `${seconds} s`;
+      // return `${seconds} s`;
+      return "< 1min";
     }
   };
 }

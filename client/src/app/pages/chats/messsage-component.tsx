@@ -7,18 +7,21 @@ import AudioPlayer from "@/app/components/post/audio-player";
 import VideoPlayer from "@/app/components/post/video-player";
 import { Button } from "@/app/components/ui/button";
 import { MdOutlineFileDownload } from "react-icons/md";
-import { IChat, ILastChat } from "@/types/chat-types";
+import { IAllChats, IChat, ILastChat } from "@/types/chat-types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
 import { IFile } from "@/types/file-types";
 import { useInView } from "react-intersection-observer";
 import toast from "react-hot-toast";
 import useSocket from "@/app/providers/socket-provider";
+import ChatUtils from "@/utils/chat-utils";
+import { useParams } from "react-router-dom";
 type MessageCompProps = {
   chat: IChat;
 };
 
 const MessageComp = ({ chat }: MessageCompProps) => {
+  const { chatId } = useParams<{ chatId: string }>();
   const queryClient = useQueryClient();
   const { socket } = useSocket();
   const { data: currentUser } = useQuery<IUser>({
@@ -32,6 +35,7 @@ const MessageComp = ({ chat }: MessageCompProps) => {
   useEffect(() => {
     if (inView && !chat.isSeen && !isSent) {
       // mark as seen
+      console.log("marking as seen");
       socket &&
         socket.emit(
           "mark-as-seen",
@@ -44,8 +48,17 @@ const MessageComp = ({ chat }: MessageCompProps) => {
             if (!res) return;
             queryClient.setQueryData<ILastChat[]>(["lastChats"], (prev) => {
               return prev?.map((c) => {
-                if (c._id === chat._id) {
-                  return { ...c, isSeen: true };
+                const chatId = ChatUtils.createChatId(chat.sentBy, chat.sentTo);
+                const lChatId = ChatUtils.createChatId(
+                  c.lastChat.sentBy,
+                  c.lastChat.sentTo
+                );
+                if (chatId === lChatId) {
+                  return {
+                    ...c,
+                    isSeen: true,
+                    unseenMessagesCount: c.unseenMessagesCount - 1,
+                  };
                 }
                 return c;
               });
@@ -53,6 +66,7 @@ const MessageComp = ({ chat }: MessageCompProps) => {
           }
         );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     chat._id,
     chat.isSeen,
