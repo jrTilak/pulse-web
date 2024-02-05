@@ -9,7 +9,6 @@ import ReactLoading from "react-loading";
 import { motion } from "framer-motion";
 import { shadow } from "@/assets/constants/styles";
 import { IPostContent } from "@/types/post-types";
-import { Card, CardContent, CardHeader } from "@/app/components/ui/card";
 import { Textarea } from "@/app/components/ui/textarea";
 import ImagesLayoutButtons from "./images-layout-button";
 import ImagesPost from "@/app/components/post/image-post";
@@ -61,7 +60,9 @@ const CreateNewPost = () => {
 
   useEffect(() => {
     if (contents?.images && contents?.images?.length < 3) {
-      setContents((prev) => ({ ...prev, imagesLayout: "vertical" } as IPostContent));
+      setContents(
+        (prev) => ({ ...prev, imagesLayout: "vertical" } as IPostContent)
+      );
     }
   }, [contents?.images, contents?.images?.length]);
 
@@ -165,7 +166,9 @@ const CreateNewPost = () => {
           const reader = new FileReader();
           reader.onloadend = () => {
             const base64Data = reader.result as string;
-            setContents((prev) => ({ ...prev, audio: base64Data } as IPostContent));
+            setContents(
+              (prev) => ({ ...prev, audio: base64Data } as IPostContent)
+            );
           };
           reader.readAsDataURL(file);
         } else {
@@ -181,101 +184,95 @@ const CreateNewPost = () => {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="flex items-center justify-center h-screen mt-12"
+      className="flex items-center justify-center h-[100svh]"
     >
       <div
         className={cn(
-          "p-6 flex justify-evenly flex-col rounded-md max-w-[600px] max-h-full w-full m-6",
+          " mt-2 p-6 flex justify-evenly flex-col rounded-md max-w-[600px] max-h-[90vh] overflow-y-scroll w-full gap-3",
           shadow.sm
         )}
       >
-        <Card className="mb-6 border-none rounded-lg">
-          <CardHeader className="flex items-baseline p-2 space-x-2 border-b-2">
-            <FaPencilAlt className="w-6 h-6 text-muted-foreground" />
-            <h2 className="text-lg font-semibold text-foreground">
-              Create Post
-            </h2>
-          </CardHeader>
-          <CardContent className="mt-4">
-            <div className="grid w-full items-center gap-1.5">
-              <div className="relative">
-                <Textarea
-                  className="w-full h-12 min-h-0 p-2 border-none rounded-md outline-none"
-                  id="text"
-                  autoFocus
-                  ref={textInputRef}
-                  placeholder="What's on your mind?"
-                  value={contents?.text}
-                  onChange={(e) => {
-                    let textVal = e.target.value;
-                    if (textVal.length > 600) {
-                      textVal = textVal.slice(0, 600);
-                    }
-                    setContents(
-                      (prev) => ({ ...prev, text: textVal } as IPostContent)
-                    );
-                  }}
-                />
-                <span className="absolute text-xs font-light bottom-1 right-1">
-                  {contents?.text?.length || 0} / 600
-                </span>
-              </div>
-              {contents?.images && contents?.images?.length > 0 && (
-                <>
-                  <ImagesLayoutButtons
-                    images={contents.images}
-                    layout={contents.imagesLayout}
-                    setContents={setContents}
-                  />
-                  <ImagesPost
-                    images={contents.images}
-                    key="editing"
-                    setContents={setContents}
-                    layout={contents.imagesLayout}
-                  />
-                </>
-              )}
-              {contents?.video && (
-                <VideoPlayer
-                  video={contents.video}
-                  setContents={setContents}
-                />
-              )}
-              {contents?.audio && (
-                <AudioPlayer
-                  audio={contents.audio}
-                  setContents={setContents}
-                />
-              )}
-              <div className="flex justify-start gap-2 mt-2">
-                <Button
-                  variant="secondary"
-                  className="flex items-center "
-                  onClick={handleImageVideoUpload}
-                >
-                  <CiImageOn className="w-4 h-4" />
-                  <span>
-                    {contents?.images && contents?.images?.length > 0
-                      ? "Photo"
-                      : "Photo/Video"}
-                  </span>
-                </Button>
-                <Button
-                  onClick={handleAudioUpload}
-                  variant="secondary"
-                  className="flex items-center "
-                >
-                  <PiMicrophone className="w-4 h-4" />
-                  <span>Audio</span>
-                </Button>
-                <Button variant="secondary" className="flex items-center ">
-                  <IoDocumentTextOutline className="w-4 h-4" />
-                  <span>Document</span>
-                </Button>
-              </div>
+        <div className="flex items-baseline p-2 space-x-2 border-b-2">
+          <FaPencilAlt className="w-6 h-6 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">Create Post</h2>
+        </div>
+        <div className="mt-4">
+          <div className="grid w-full items-center gap-1.5">
+            <div className="relative">
+              <Textarea
+                className="w-full h-12 min-h-0 p-2 border-none rounded-md outline-none max-h-36"
+                id="text"
+                autoFocus
+                ref={textInputRef}
+                placeholder="What's on your mind?"
+                value={contents?.text}
+                onChange={(e) => {
+                  let textVal = e.target.value;
+                  if (textVal.length > 600) {
+                    textVal = textVal.slice(0, 600);
+                  }
+                  setContents(
+                    (prev) => ({ ...prev, text: textVal } as IPostContent)
+                  );
+                  // Make the textarea adjust its height automatically
+                  const target = e.target as HTMLTextAreaElement;
+                  target.style.height = "auto";
+                  target.style.height = `${target.scrollHeight}px`;
+                }}
+              />
+              <span className="absolute text-xs font-light bottom-1 right-1">
+                {contents?.text?.length || 0} / 600
+              </span>
             </div>
-          </CardContent>
-        </Card>
+            {contents?.images && contents?.images?.length > 0 && (
+              <>
+                <ImagesLayoutButtons
+                  images={contents.images}
+                  layout={contents.imagesLayout}
+                  setContents={setContents}
+                />
+                <ImagesPost
+                  images={contents.images}
+                  key="editing"
+                  setContents={setContents}
+                  layout={contents.imagesLayout}
+                />
+              </>
+            )}
+            {contents?.video && (
+              <VideoPlayer video={contents.video} setContents={setContents} />
+            )}
+            {contents?.audio && (
+              <AudioPlayer audio={contents.audio} setContents={setContents} />
+            )}
+            <div className="flex justify-start gap-2 mt-2">
+              <Button
+                variant="secondary"
+                className="flex items-center "
+                onClick={handleImageVideoUpload}
+              >
+                <CiImageOn className="w-4 h-4" />
+                <span>
+                  {contents?.images && contents?.images?.length > 0
+                    ? "Photo"
+                    : "Photo/Video"}
+                </span>
+              </Button>
+              <Button
+                onClick={handleAudioUpload}
+                variant="secondary"
+                className="flex items-center "
+              >
+                <PiMicrophone className="w-4 h-4" />
+                <span>Audio</span>
+              </Button>
+              <Button variant="secondary" className="flex items-center ">
+                <IoDocumentTextOutline className="w-4 h-4" />
+                <span>Document</span>
+              </Button>
+            </div>
+          </div>
+        </div>
         <div className="flex justify-between">
           <CancelCreatePost setContents={setContents} />
           <div className="flex space-x-2">

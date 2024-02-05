@@ -10,6 +10,7 @@ import { IUser } from "@/types/user-types";
 import useSocket from "../providers/socket-provider";
 import Peer from "peerjs";
 import usePeer from "../providers/peer-provider";
+import { useLocation } from "react-router-dom";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const { setSocket } = useSocket();
@@ -60,12 +61,18 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     setPeerCall,
     setRemoteUserStream,
   ]);
-
+  const { pathname } = useLocation();
   return (
-    <div className="min-h-screen flex md:flex-row flex-col-reverse">
+    <div className="min-h-[100svh] flex md:flex-row flex-col-reverse">
       <SidebarHeader />
       <SidebarComp />
-      <ScrollArea className={cn("md:h-screen w-full", height.max)}>
+      <ScrollArea
+        className={cn(
+          "md:h-screen w-full",
+          height.max,
+          pathname.startsWith("/chat") ? "h-[100svh]" : ""
+        )}
+      >
         <div className={cn("mx-auto", height.max)}>{children}</div>
       </ScrollArea>
     </div>

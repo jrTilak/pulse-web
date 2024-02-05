@@ -50,7 +50,7 @@ const UserSignup = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-muted flex justify-center sm:max-h-[90vh] overflow-hidden">
+    <div className="relative min-h-[100svh] bg-muted flex justify-center sm:max-h-[90vh] overflow-hidden">
       <MotionImg className="right-0 bottom-0" />
       <MotionImg className="hidden lg:block left-0 top-0" />
       <motion.div

@@ -1,6 +1,6 @@
 const LoadingPage = () => {
   return (
-    <div className="w-full h-screen flex m-auto text-primary">
+    <div className="w-full h-[100svh] flex m-auto text-primary">
       <div className="heart-rate self-center">
         <svg
           version="1.0"

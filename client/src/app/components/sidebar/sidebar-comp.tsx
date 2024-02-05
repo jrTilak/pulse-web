@@ -77,7 +77,8 @@ const SidebarComp = () => {
         className={cn(
           //  border-r shadow.sm
           "relative transition-all ease-in max-md:border-t max-md:z-20 overflow-x-hidden",
-          isSidebarCollapsed ? "" : "xl:w-60"
+          isSidebarCollapsed ? "" : "xl:w-60",
+          pathname.startsWith("/chats") ? "hidden md:flex" : ""
         )}
       >
         <motion.div

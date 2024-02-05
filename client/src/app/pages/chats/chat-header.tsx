@@ -10,7 +10,8 @@ import { IUser } from "@/types/user-types";
 import { useState } from "react";
 import VideoCall from "@/app/components/call/video-call";
 import UserImageOnly from "@/app/components/avatars/user-image-only";
-
+import { LuArrowLeftFromLine } from "react-icons/lu";
+import { cn } from "@/lib/utils";
 export const ChatHeader = ({ user }: { user: IUser }) => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false);
   const headerIcons = [
@@ -18,6 +19,7 @@ export const ChatHeader = ({ user }: { user: IUser }) => {
       icon: CiSearch,
       action: () => {},
       label: "Search",
+      className: "hidden md:flex",
     },
     {
       icon: IoCallOutline,
@@ -28,6 +30,7 @@ export const ChatHeader = ({ user }: { user: IUser }) => {
       icon: IoVideocamOutline,
       action: () => setIsVideoCallOpen(true),
       label: "Video Call",
+      className: "hidden md:flex",
     },
     {
       icon: HiOutlineDotsHorizontal,
@@ -39,13 +42,21 @@ export const ChatHeader = ({ user }: { user: IUser }) => {
     <>
       <div className="w-full px-6 py-4 border-b border-muted">
         <div className="flex items-center justify-between w-full">
-          <UserAvatar user={user as IUser} />
+          <div className="flex gap-4">
+            <Link to="/chats" className="flex items-center gap-2 md:hidden">
+              <LuArrowLeftFromLine className="w-6 h-6 text-muted-foreground" />
+            </Link>
+            <UserAvatar user={user as IUser} />
+          </div>
           <div className="flex gap-2">
             {headerIcons.map((icon, index) => (
               <button
                 key={index}
                 onClick={icon.action}
-                className="flex items-center cursor-pointer justify-center w-10 h-10 p-2 rounded-full hover:bg-muted"
+                className={cn(
+                  "flex items-center cursor-pointer justify-center w-10 h-10 p-2 rounded-full hover:bg-muted",
+                  icon.className
+                )}
               >
                 <icon.icon className="w-6 h-6 text-muted-foreground" />
               </button>

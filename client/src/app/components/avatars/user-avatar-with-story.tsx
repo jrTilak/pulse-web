@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/app/components/ui/dialog";
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import { useState } from "react";
-import StoryCard from "../cards/story-card";
+import StoryCard from "../stories/story-card";
 import UserImageOnly from "./user-image-only";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 // import StoryCard from "@/app/components/cards/story-card";

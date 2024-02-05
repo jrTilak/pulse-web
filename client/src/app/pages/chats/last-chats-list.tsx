@@ -16,7 +16,7 @@ import ChatHandler from "@/handlers/chat-handlers";
 import useSocket from "@/app/providers/socket-provider";
 import UserHandler from "@/handlers/user-handlers";
 import UserImageOnly from "@/app/components/avatars/user-image-only";
-
+import { LuArrowLeftFromLine } from "react-icons/lu";
 const LastChatsList = () => {
   const [isVisibile, setIsVisible] = useState(false);
   const queryClient = useQueryClient();
@@ -127,13 +127,23 @@ const LastChatsList = () => {
       className={cn(
         "flex flex-col gap-3 md:max-w-[380px] max-w-none min-w-[380px] p-6 bg-muted w-full",
         isVisibile ? "" : "hidden md:flex",
-        height.max
+        height.max,
+        pathname.startsWith("/chat") ? "h-[100svh]" : ""
       )}
     >
       <div className="flex justify-between">
-        <Link to="/chats" className="text-2xl font-semibold text-foreground">
-          Chats
-        </Link>
+        <div className="flex gap-3 items-center justify-center">
+          <Link to="/" className="flex gap-3 items-center md:hidden">
+            <LuArrowLeftFromLine className="text-xl text-foreground" />
+            <span className="text-xl font-semibold text-foreground">Home</span>
+          </Link>
+          <Link
+            to="/chats"
+            className="text-2xl font-semibold text-foreground hidden md:block"
+          >
+            Chats
+          </Link>
+        </div>
         <NewChatButton />
       </div>
       <SearchBar />

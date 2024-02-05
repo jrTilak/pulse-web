@@ -34,7 +34,7 @@ const SimpleTextIconCard = ({
       transition={{ duration: 0.2 }}
       onClick={handleClick}
       className={cn(
-        "w-52 bg-muted rounded-md flex items-center justify-center flex-col cursor-pointer aspect-[1/2]",
+        "w-[80vw] md:w-52 bg-muted rounded-md flex items-center justify-center flex-col cursor-pointer aspect-[2/1] md:aspect-[1/2]",
         shadow.sm,
         className
       )}

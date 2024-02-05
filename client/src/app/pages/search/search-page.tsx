@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
-import {
-  COVER_PLACEHOLDER,
-} from "@/assets/constants/placeholders";
+import { COVER_PLACEHOLDER } from "@/assets/constants/placeholders";
 import UserHandler from "@/handlers/user-handlers";
 import { useQuery } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
@@ -12,6 +10,7 @@ import { Button } from "@/app/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import sadSvg from "@/assets/svg/individual/sad.svg";
 import UserImageOnly from "@/app/components/avatars/user-image-only";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,10 +38,7 @@ const SearchPage = () => {
     );
     setFilteredUsers(filteredUsers || []);
   }, [query, users]);
-
-  if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error...</p>;
-
   return (
     <ScrollArea className="w-full h-full p-4 lg:p-12 max-w-2xl mx-auto ">
       <div className="flex flex-col gap-2">
@@ -71,7 +67,12 @@ const SearchPage = () => {
         </div>
         <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
           {filteredUsers.map((user) => (
-            <SearchUserAvatar key={user._id} user={user} q={query} />
+            <SearchUserAvatar
+              key={user._id}
+              user={user}
+              q={query}
+              isLoading={false}
+            />
           ))}
           {filteredUsers.length === 0 && query !== "" && (
             <div className="flex flex-col items-center justify-center w-full m-auto col-span-2">
@@ -81,6 +82,12 @@ const SearchPage = () => {
               </p>
             </div>
           )}
+          {isLoading && (
+            <>
+              <SearchUserAvatar user={null} q={query} isLoading={true} />
+              <SearchUserAvatar user={null} q={query} isLoading={true} />
+            </>
+          )}
         </div>
       </div>
     </ScrollArea>
@@ -88,8 +95,16 @@ const SearchPage = () => {
 };
 export default SearchPage;
 
-const SearchUserAvatar = ({ user, q }: { user: IUser; q: string }) => {
-  const splitName = user.name.toLowerCase().split(q.toLowerCase());
+const SearchUserAvatar = ({
+  user,
+  q,
+  isLoading,
+}: {
+  user: IUser | null;
+  q: string;
+  isLoading: boolean;
+}) => {
+  const splitName = user?.name.toLowerCase().split(q.toLowerCase());
   return (
     <AnimatePresence>
       <motion.div
@@ -99,55 +114,83 @@ const SearchUserAvatar = ({ user, q }: { user: IUser; q: string }) => {
         className="border bg-muted transition-shadow shadow-xl hover:shadow-xl w-full rounded-md"
       >
         <div className="w-full border-b border-slate-300">
-          <img
-            src={user.coverImg || COVER_PLACEHOLDER}
-            className="h-36 w-full object-cover rounded-md rounded-b-none"
-          />
+          {!isLoading ? (
+            <img
+              src={user?.coverImg || COVER_PLACEHOLDER}
+              className="h-36 w-full object-cover rounded-md rounded-b-none"
+            />
+          ) : (
+            <Skeleton className="h-36 w-full object-cover rounded-md rounded-b-none" />
+          )}
         </div>
         <div className="flex items-center p-4">
           <div className="relative flex flex-col items-center w-full">
             <div className="h-24 w-24 md rounded-full avatar items-end justify-end text-primary min-w-max relative -top-16 flex bg-muted-foreground row-start-1 row-end-3">
-              <UserImageOnly
-                img={user.profileImg}
-                name={user.name}
-                className="w-24 h-24 text-xl"
-              />
+              {!isLoading ? (
+                <UserImageOnly
+                  img={user?.profileImg}
+                  name={user?.name || ""}
+                  className="w-24 h-24 text-xl"
+                />
+              ) : (
+                <Skeleton className="w-24 h-24" />
+              )}
             </div>
             <div className="flex flex-col justify-center items-center -mt-14 w-full">
-              <span className="text-md whitespace-nowrap font-semibold">
-                {splitName.map((part, index) => (
-                  <span key={index}>
-                    {part}
-                    {index !== splitName.length - 1 && (
-                      <span className="bg-primary">{q}</span>
-                    )}
+              {!isLoading ? (
+                <span className="text-md whitespace-nowrap font-semibold">
+                  {splitName?.map((part, index) => (
+                    <span key={index}>
+                      {part}
+                      {index !== splitName.length - 1 && (
+                        <span className="bg-primary">{q}</span>
+                      )}
+                    </span>
+                  ))}{" "}
+                  <span className="text-muted-foreground font-normal">
+                    (
+                    {user?.username && user?.username?.length > 15
+                      ? user?.username.substring(0, 15) + "..."
+                      : user?.username}
+                    )
                   </span>
-                ))}{" "}
-                <span className="text-muted-foreground font-normal">
-                  (
-                  {user.username.length > 15
-                    ? user.username.substring(0, 15) + "..."
-                    : user.username}
-                  )
                 </span>
-              </span>
+              ) : (
+                <Skeleton className="w-[60%] h-6 bg-gray-200" />
+              )}
               <div className="py-2 flex">
-                <Link to={`/u/${user.username}`}>
-                  <Button variant="outline">Visit Profile</Button>
-                </Link>
+                {!isLoading ? (
+                  <Link to={`/u/${user?.username}`}>
+                    <Button variant="outline">Visit Profile</Button>
+                  </Link>
+                ) : (
+                  <Skeleton className="w-24 h-4 bg-gray-200" />
+                )}
               </div>
               <div className="flex justify-center items-center w-full divide-x divide-gray-400 divide-solid">
                 <span className="text-center px-2">
-                  <span className="font-bold text-gray-700">
-                    {user.followers}{" "}
-                  </span>
-                  <span className="text-gray-600">followers</span>
+                  {!isLoading ? (
+                    <>
+                      <span className="font-bold text-gray-700">
+                        {user?.followers}{" "}
+                      </span>
+                      <span className="text-gray-600">followers</span>
+                    </>
+                  ) : (
+                    <Skeleton className="w-8 h-4 bg-gray-200" />
+                  )}
                 </span>
                 <span className="text-center px-2">
-                  <span className="font-bold text-gray-700">
-                    {user.following}{" "}
-                  </span>
-                  <span className="text-gray-600">following</span>
+                  {!isLoading ? (
+                    <>
+                      <span className="font-bold text-gray-700">
+                        {user?.following}{" "}
+                      </span>
+                      <span className="text-gray-600">following</span>
+                    </>
+                  ) : (
+                    <Skeleton className="w-8 h-4 bg-gray-200" />
+                  )}
                 </span>
               </div>
             </div>

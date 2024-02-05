@@ -95,7 +95,7 @@ const StoryCard = ({
       >
         <div
           className={cn(
-            "min-w-full w-80 h-full flex items-center justify-center rounded-md",
+            "min-w-full w-[60vw] sm:w-80 h-full flex items-center justify-center rounded-md",
             content?.type === "text" ? "p-4" : ""
           )}
           style={{

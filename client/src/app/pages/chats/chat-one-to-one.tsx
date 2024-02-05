@@ -112,7 +112,7 @@ const ChatsOneToOne = () => {
         ref={chatContainerRef}
         className={cn(
           "flex flex-grow p-4 w-full overflow-y-scroll",
-          height.chat
+          height.chat,
         )}
       >
         <motion.div className="flex flex-col gap-1 w-full h-full">
