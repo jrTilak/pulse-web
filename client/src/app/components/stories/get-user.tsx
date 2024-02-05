@@ -1,4 +1,4 @@
-import UserAvatar from "../avatars/user-avatar";
+import UserAvatar from "../avatars/user-avatar-with-story";
 import UserHandler from "@/handlers/user-handlers";
 import { useQuery } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";

@@ -10,12 +10,12 @@ import ImagesPost from "./image-post";
 import VideoPlayer from "./video-player";
 import AudioPlayer from "./audio-player";
 import PostReactionFooter from "./post-reaction-footer";
-import UserAvatar from "../avatars/user-avatar";
 import DateUtils from "@/utils/date-utils";
 import { IPost } from "@/types/post-types";
 import { Skeleton } from "../ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
+import UserImageOnly from "../avatars/user-image-only";
 
 interface PostComponentProps {
   post: IPost;
@@ -51,10 +51,10 @@ const PostComponent = ({
             to={`/u/${post?.owner?.username}`}
             className="flex items-center px-4 group justify-center"
           >
-            <UserAvatar
-              user={post?.owner}
-              className="w-10 h-10"
-              containerClassName=" mb-0"
+            <UserImageOnly
+              img={post?.owner?.profileImg}
+              name={post?.owner?.name || ""}
+              isOnline={post?.owner?.isOnline}
             />
 
             <div className="ml-3 ">

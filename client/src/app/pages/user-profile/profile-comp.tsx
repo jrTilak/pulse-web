@@ -8,7 +8,7 @@ import { PiChatsCircle } from "react-icons/pi";
 import Loading from "react-loading";
 import UploadImageButton from "./upload-image-btn";
 import ProfileInfo from "./profile-info";
-import UserAvatar from "@/app/components/avatars/user-avatar";
+import UserAvatar from "@/app/components/avatars/user-avatar-with-story";
 import { useNavigate } from "react-router-dom";
 import ChatUtils from "@/utils/chat-utils";
 import useUserProfileStore from "@/app/providers/user-profile-provider";

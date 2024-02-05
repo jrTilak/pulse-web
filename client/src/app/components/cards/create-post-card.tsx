@@ -41,14 +41,15 @@ const CreatePostCard = () => {
         <UserImageOnly
           img={currentUser?.profileImg || AVATAR_PLACEHOLDER}
           isOnline={currentUser?.isOnline || false}
-          className="w-10 h-10"
+          name={currentUser?.name || ""}
+          userId={currentUser?._id}
         />
         <Button
           variant="ghost"
           onClick={() => {
             navigate("/new/post/");
           }}
-          className="w-full h-10 pl-5 rounded-full cursor-pointer bg-muted hover:text-muted-foreground"
+          className="flex-grow h-10 pl-5 rounded-full cursor-pointer bg-muted hover:text-muted-foreground"
         >
           <span className="self-start">
             What&apos;s up {currentUser?.name.split(" ")[0]}?

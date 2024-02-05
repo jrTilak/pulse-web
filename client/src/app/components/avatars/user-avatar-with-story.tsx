@@ -1,4 +1,3 @@
-import { AVATAR_PLACEHOLDER } from "@/assets/constants/placeholders";
 import { cn } from "@/lib/utils";
 import { IUser } from "@/types/user-types";
 import { useNavigate } from "react-router-dom";
@@ -6,52 +5,59 @@ import { Dialog, DialogContent } from "@/app/components/ui/dialog";
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import { useState } from "react";
 import StoryCard from "../cards/story-card";
+import UserImageOnly from "./user-image-only";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 // import StoryCard from "@/app/components/cards/story-card";
 
-const UserAvatar = ({
+const UserAvatarWithStory = ({
   user,
   className,
-  height,
-  width,
-  containerClassName,
 }: {
   user: IUser | undefined;
   className?: string;
-  height?: number;
-  width?: number;
-  containerClassName?: string;
 }) => {
   const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [visibleStoryIndex, setVisibleStoryIndex] = useState(0);
   const [prevVisibleStoryIndex, setPrevVisibleStoryIndex] = useState(0);
-  const handleAvatarClick = () => {
+  const onClick = () => {
     if (user?.stories?.length === 0) {
       return navigate(`/u/${user.username}`);
     }
     setIsDialogOpen(true);
   };
+  const len = user?.name.split(" ").length || 0;
+  const name = user?.name || "Unknown";
+  const initials =
+    len > 1
+      ? name.split(" ")[0][0] + name.split(" ")[1][0]
+      : name[0] + name[1] || "U";
+
   if (!user) return null;
+
+  if (user?.stories?.length === 0) {
+    return (
+      <UserImageOnly
+        img={user.profileImg}
+        name={user.name}
+        className={className}
+        userId={user._id}
+      />
+    );
+  }
+
   return (
     <>
       <div
-        onClick={handleAvatarClick}
+        onClick={onClick}
         className={cn(
-          "items-center justify-center flex mb-2 cursor-pointer",
-          containerClassName
+          "relative cursor-pointer border-2 border-primary rounded-full"
         )}
       >
-        <img
-          height={height}
-          width={width}
-          className={cn(
-            "relative object-cover object-center rounded-full h-36 w-36",
-            className,
-            user?.stories?.length && "ring-2 ring-primary"
-          )}
-          src={user?.profileImg || AVATAR_PLACEHOLDER}
-          alt={user?.name}
-        />
+        <Avatar className={className}>
+          <AvatarImage src={user.profileImg} />
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
       </div>
       {user?.stories?.length > 0 && (
         <Dialog
@@ -102,4 +108,4 @@ const UserAvatar = ({
     </>
   );
 };
-export default UserAvatar;
+export default UserAvatarWithStory;

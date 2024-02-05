@@ -26,6 +26,7 @@ import StoryHandler from "@/handlers/story-handlers";
 import { useRef, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { IUserStory } from "@/types/story-types";
+import UserImageOnly from "../avatars/user-image-only";
 
 const StoryCard = ({
   _id,
@@ -44,7 +45,6 @@ const StoryCard = ({
     queryKey: ["currentUser"],
   });
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { isLoading, data: content } = useQuery({
     queryKey: [`story`, _id],
@@ -139,18 +139,16 @@ const StoryCard = ({
           {content?.type === "video" && (
             <VideoPlayerCard src={content?.content} />
           )}
-          <div className="flex absolute bottom-4 left-4 gap-2 items-center">
-            <img
-              onClick={() => {
-                navigate(`/u/${user.username}`);
-                setIsDialogOpen(false);
-              }}
-              className=" w-8 h-8 object-cover object-center rounded-full cursor-pointer"
-              src={user.profileImg || AVATAR_PLACEHOLDER}
-              alt={user.name}
+          <div className="flex absolute bottom-4 left-4 gap-2 items-center justify-center">
+            <UserImageOnly
+              img={user.profileImg}
+              name={user.name}
+              userId={user._id}
+              className="w-8 h-8"
             />
+            <span className="w-0.5 h-0.5 bg-muted-foreground rounded-full" />
             <p className="text-xs font-light text-wrap overflow-hidden break-words text-muted-foreground">
-              {DateUtils.getTimeElapsed(content?.createdAt as string)}
+              {DateUtils.getTimeElapsed(content?.createdAt as string)} ago
             </p>
           </div>
 
