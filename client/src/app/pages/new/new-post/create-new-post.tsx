@@ -60,21 +60,21 @@ const CreateNewPost = () => {
   };
 
   useEffect(() => {
-    if (contents?.images && contents?.images.length < 3) {
+    if (contents?.images && contents?.images?.length < 3) {
       setContents((prev) => ({ ...prev, imagesLayout: "vertical" } as IPostContent));
     }
-  }, [contents?.images, contents?.images.length]);
+  }, [contents?.images, contents?.images?.length]);
 
   const handleImageVideoUpload = () => {
     if (
-      (contents?.images && contents?.images.length >= 3) ||
-      (contents?.video && contents?.video.length > 0)
+      (contents?.images && contents?.images?.length >= 3) ||
+      (contents?.video && contents?.video?.length > 0)
     )
       return toast.error("You can only upload 3 images or 1 video.");
     const input = document.createElement("input");
     input.type = "file";
     input.accept =
-      contents?.images && contents?.images.length > 0
+      contents?.images && contents?.images?.length > 0
         ? "image/*"
         : "image/*,video/*";
     input.onchange = (event) => {
@@ -220,7 +220,7 @@ const CreateNewPost = () => {
                   {contents?.text?.length || 0} / 600
                 </span>
               </div>
-              {contents?.images && contents?.images.length > 0 && (
+              {contents?.images && contents?.images?.length > 0 && (
                 <>
                   <ImagesLayoutButtons
                     images={contents.images}
