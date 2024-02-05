@@ -10,7 +10,6 @@ import { Skeleton } from "../ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import PostHandler from "@/handlers/post-handlers";
 import { handlePostShare } from "./utils";
-import React from "react";
 import { IUser } from "@/types/user-types";
 import Loading from "react-loading";
 
