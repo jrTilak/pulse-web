@@ -13,11 +13,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoCloseOutline } from "react-icons/io5";
-import { AVATAR_PLACEHOLDER } from "@/assets/constants/placeholders";
 import UserHandler from "@/handlers/user-handlers";
 import ChatUtils from "@/utils/chat-utils";
 import { useQuery } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
+import UserImageOnly from "@/app/components/avatars/user-image-only";
 
 const NewChatButton = () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -133,11 +133,7 @@ const Avatar = ({
       key={user._id}
       className="flex items-center gap-2 hover:bg-muted px-4 py-2 cursor-pointer rounded-md transition-colors"
     >
-      <img
-        className="w-10 h-10 rounded-full object-cover object-center"
-        src={user.profileImg || AVATAR_PLACEHOLDER}
-        alt=""
-      />
+      <UserImageOnly img={user.profileImg} name={user.name} />
       <div className="flex flex-col">
         <h5 className="mb-1 text-base truncate text-muted-foreground">
           {user.name}

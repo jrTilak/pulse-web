@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import {
-  AVATAR_PLACEHOLDER,
   COVER_PLACEHOLDER,
 } from "@/assets/constants/placeholders";
 import UserHandler from "@/handlers/user-handlers";
@@ -12,6 +11,7 @@ import { ScrollArea } from "@/app/components/ui/scroll-area";
 import { Button } from "@/app/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import sadSvg from "@/assets/svg/individual/sad.svg";
+import UserImageOnly from "@/app/components/avatars/user-image-only";
 
 const SearchPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -107,10 +107,10 @@ const SearchUserAvatar = ({ user, q }: { user: IUser; q: string }) => {
         <div className="flex items-center p-4">
           <div className="relative flex flex-col items-center w-full">
             <div className="h-24 w-24 md rounded-full avatar items-end justify-end text-primary min-w-max relative -top-16 flex bg-muted-foreground row-start-1 row-end-3">
-              <img
-                className="h-24 w-24 md rounded-full relative object-cover object-center"
-                src={user.profileImg || AVATAR_PLACEHOLDER}
-                alt=""
+              <UserImageOnly
+                img={user.profileImg}
+                name={user.name}
+                className="w-24 h-24 text-xl"
               />
             </div>
             <div className="flex flex-col justify-center items-center -mt-14 w-full">

@@ -8,7 +8,6 @@ import { IPost } from "@/types/post-types";
 import { useQuery } from "@tanstack/react-query";
 import { IUser } from "@/types/user-types";
 import PostHandler from "@/handlers/post-handlers";
-import UserAvatar from "@/app/components/avatars/user-avatar";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { ThreeDotsMenu } from "@/app/components/post/three-dots-menu";
 import TextPost from "@/app/components/post/text-post";
@@ -16,6 +15,7 @@ import ImagesPost from "@/app/components/post/image-post";
 import VideoPlayer from "@/app/components/post/video-player";
 import AudioPlayer from "@/app/components/post/audio-player";
 import PostReactionFooter from "@/app/components/post/post-reaction-footer";
+import UserImageOnly from "@/app/components/avatars/user-image-only";
 
 interface PostComponentProps {
   postId: string;
@@ -47,10 +47,10 @@ const PostComponent = ({ postId }: PostComponentProps) => {
             to={`/u/${post?.owner?.username}`}
             className="flex items-center px-4 group justify-center"
           >
-            <UserAvatar
-              user={post?.owner}
-              className="w-10 h-10"
-              containerClassName=" mb-0"
+            <UserImageOnly
+              img={post?.owner?.profileImg}
+              name={post?.owner?.name || ""}
+              isOnline={post?.owner?.isOnline}
             />
 
             <div className="ml-3 ">

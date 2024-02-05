@@ -1,10 +1,9 @@
+import UserImageOnly from "@/app/components/avatars/user-image-only";
 import { Skeleton } from "@/app/components/ui/skeleton";
-import { AVATAR_PLACEHOLDER } from "@/assets/constants/placeholders";
 import UserHandler from "@/handlers/user-handlers";
 import { IUser } from "@/types/user-types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 
 const SuggestedUsers = () => {
   const { data: suggestedUsers, isLoading } = useQuery({
@@ -51,17 +50,8 @@ const User = ({ user }: { user: IUser }) => {
     },
   });
   return (
-    <div key={user._id} className="flex items-center gap-4">
-      <Link to={`/u/${user.username}`} className="relative">
-        <img
-          src={user.profileImg || AVATAR_PLACEHOLDER}
-          alt="profile"
-          className="w-10 h-10 rounded-full"
-        />
-        {user.isOnline && (
-          <div className="absolute bottom-0 right-0 w-3 h-3 bg-blue-600 bg-opacity-90 rounded-full" />
-        )}
-      </Link>
+    <div className="flex items-center gap-4">
+      <UserImageOnly img={user.profileImg} name={user.name} userId={user._id} />
       <div className="flex flex-col">
         <h1 className="font-semibold text-sm ">{user.name}</h1>
         <h1 className="text-xs font-extralight text-muted-foreground">

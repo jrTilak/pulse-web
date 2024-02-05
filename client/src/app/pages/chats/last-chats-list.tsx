@@ -1,6 +1,5 @@
 import StoriesList from "@/app/components/stories/stories-list";
 import SearchBar from "./search-bar";
-import UserAvatar from "@/app/components/avatars/user-avatar";
 import { cn } from "@/lib/utils";
 import { Link, useLocation, useParams } from "react-router-dom";
 import NewChatButton from "./new-chat-button";
@@ -16,6 +15,7 @@ import { IAllChats, IChat, ILastChat } from "@/types/chat-types";
 import ChatHandler from "@/handlers/chat-handlers";
 import useSocket from "@/app/providers/socket-provider";
 import UserHandler from "@/handlers/user-handlers";
+import UserImageOnly from "@/app/components/avatars/user-image-only";
 
 const LastChatsList = () => {
   const [isVisibile, setIsVisible] = useState(false);
@@ -29,7 +29,7 @@ const LastChatsList = () => {
 
   const { data: currentUser } = useQuery<IUser>({ queryKey: ["currentUser"] });
 
-  const { data: chattingWith, } = useQuery({
+  const { data: chattingWith } = useQuery({
     queryKey: ["chattingWith", chatId],
     queryFn: () => {
       const users = ChatUtils.getUserIdsFromChatId(
@@ -163,20 +163,6 @@ const LastChatsList = () => {
 };
 export default LastChatsList;
 
-const UserAvatarInChat = ({ user }: { user: IUser }) => {
-  return (
-    <div className="relative">
-      <UserAvatar user={user} className="w-12 h-12" />
-      <span
-        className={cn(
-          "bottom-0 left-7 absolute  w-3.5 h-3.5 border-2 border-background rounded-full",
-          user.isOnline ? "bg-green-500" : "bg-gray-500"
-        )}
-      />
-    </div>
-  );
-};
-
 const AvatarWithMessage = ({ chat }: { chat: ILastChat }) => {
   const isTyping = "";
   const { data: currentUser } = useQuery<IUser>({ queryKey: ["currentUser"] });
@@ -200,7 +186,11 @@ const AvatarWithMessage = ({ chat }: { chat: ILastChat }) => {
       )}
     >
       <div className="relative flex items-center gap-2 ">
-        <UserAvatarInChat user={chat.sentTo} />
+        <UserImageOnly
+          img={chat.sentTo.profileImg}
+          name={chat.sentTo.name}
+          isOnline={chat.sentTo.isOnline}
+        />
         <div className="flex-grow overflow-hidden">
           <h5 className="mb-1 text-base truncate">{chat.sentTo.name}</h5>
           <p className="mb-0 text-xs truncate overflow-hidden text-ellipsis">
