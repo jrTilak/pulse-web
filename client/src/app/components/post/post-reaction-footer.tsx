@@ -12,6 +12,7 @@ import PostHandler from "@/handlers/post-handlers";
 import { handlePostShare } from "./utils";
 import React from "react";
 import { IUser } from "@/types/user-types";
+import Loading from "react-loading";
 
 const PostReactionFooter = ({
   post,
@@ -76,35 +77,32 @@ const PostReactionFooter = ({
             })
           : reactionsButtons.map((r) => {
               if (r.label === "like") {
+                const isLiked = post?.likes?.includes(currentUser?._id || "");
+                const Icon = isLiked ? r.active : r.icon;
                 return (
-                  <React.Fragment key={r.label}>
-                    {post?.likes?.includes(currentUser?._id as string) ? (
-                      <motion.button
-                        layout
-                        onClick={() => r.action(false)}
-                        className={cn(
-                          "inline-flex items-center gap-2 text-red-500 cursor-pointer hover:animate-pulse"
-                          //   animation.clicked
-                        )}
-                      >
-                        <r.active className="h-7 w-7 " />
-                        <span className="font-semibold">
-                          {post?.likes?.length || 0}
-                        </span>
-                      </motion.button>
-                    ) : (
-                      <motion.button
-                        layout
-                        onClick={() => r.action(true)}
-                        className="inline-flex items-center gap-2 group cursor-pointer hover:animate-pulse"
-                      >
-                        <r.icon className=" h-7 w-7 group-hover:text-red-500" />
-                        <span className="font-semibold">
-                          {post?.likes?.length || 0}
-                        </span>
-                      </motion.button>
+                  <motion.button
+                    key={r.label}
+                    disabled={toggleLike.isPending}
+                    layout
+                    onClick={() => r.action(!isLiked)}
+                    className={cn(
+                      "inline-flex items-center gap-2 text-red-500 cursor-pointer"
                     )}
-                  </React.Fragment>
+                  >
+                    {toggleLike.isPending ? (
+                      <Loading
+                        type="spin"
+                        color="#f87171"
+                        height={28}
+                        width={28}
+                      />
+                    ) : (
+                      <Icon className="h-7 w-7 " />
+                    )}
+                    <span className="font-semibold">
+                      {post?.likes?.length || 0}
+                    </span>
+                  </motion.button>
                 );
               }
               if (r.label === "comment") {
@@ -120,16 +118,22 @@ const PostReactionFooter = ({
       <div className="flex cursor-pointer">
         {isLoading ? (
           <Skeleton className="w-7 h-7" />
-        ) : isSaved ? (
-          <MdOutlineBookmark
-            onClick={() => togglePostSave.mutate(false)}
-            className="w-7 h-7 text-primary"
-          />
         ) : (
-          <MdOutlineBookmarkBorder
-            onClick={() => togglePostSave.mutate(true)}
-            className="w-7 h-7 hover:text-primary"
-          />
+          <>
+            {togglePostSave.isPending ? (
+              <Loading type="spin" height={25} color="#000000" width={25} />
+            ) : isSaved ? (
+              <MdOutlineBookmark
+                onClick={() => togglePostSave.mutate(false)}
+                className="w-7 h-7 text-primary"
+              />
+            ) : (
+              <MdOutlineBookmarkBorder
+                onClick={() => togglePostSave.mutate(true)}
+                className="w-7 h-7 hover:text-primary"
+              />
+            )}
+          </>
         )}
       </div>
     </div>
